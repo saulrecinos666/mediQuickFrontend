@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">MediQuick</string>
+    <string name="bienvenido_a_nuestra_aplicaci_n_de_gesti_n_de_citas_m_dicas_con_nuestra_plataforma_podr_s_agendar_citas_de_manera_f_cil_y_r_pida">Bienvenido a nuestra aplicación de gestión de citas médicas. Con nuestra plataforma, podrás agendar citas de manera fácil y rápida.</string>
+    <string name="iniciar_sesion">INICIAR SESION</string>
+    <string name="registrarse">REGISTRARSE</string>
+</resources>
