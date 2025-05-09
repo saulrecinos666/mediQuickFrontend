@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.LoginActivity">
+
+
+
+    <ImageView
+        android:id="@+id/imgBanner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/banner"
+        android:tintMode="multiply"
+        app:layout_constraintBottom_toTopOf="@+id/containerInputs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.30"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#DA5C5CB7" />
+
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="238dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="72dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_completo_sinfondo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imgBanner" />
+
+    <LinearLayout
+        android:id="@+id/containerInputs"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgBanner">
+
+        <!-- 🔹 Título superior -->
+        <TextView
+            android:id="@+id/tvLoginTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="Iniciar Sesión"
+            android:textAlignment="viewStart"
+            android:textColor="#073351"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/bg_edittext"
+            android:hint="Correo Electrónico"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="8dp"
+            android:inputType="textEmailAddress"
+            android:padding="7dp"
+            android:textAlignment="viewStart"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/lock_alt_svgrepo_com"
+            android:drawablePadding="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_edittext"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:padding="7dp"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="150dp"
+            android:clickable="true"
+
+            android:focusable="true"
+            android:gravity="end"
+            android:text="Olvidé mi contraseña"
+            android:textColor="#858891"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            style="@style/Button.Login"
+            android:textSize="13dp"
+            android:layout_width="120dp"
+            android:layout_height="37dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_button_login"
+            android:layout_marginBottom="15dp"
+            android:text="Ingresar" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            style="@style/Button.Register"
+            android:layout_width="120dp"
+            android:textSize="12dp"
+            android:layout_height="37dp"
+            android:background="@drawable/bg_button_login"
+            android:layout_gravity="center_horizontal"
+            android:text="Registrarme" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

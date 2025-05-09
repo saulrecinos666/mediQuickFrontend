@@ -1,5 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Neutros básicos -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta oficial del sistema -->
+    <color name="colorPrimary">#003169</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <!-- Estado de botones específicos -->
+    <color name="button_register_background">#e0e3ea</color>
+    <color name="button_register_text">#293f4e</color>
+
 </resources>

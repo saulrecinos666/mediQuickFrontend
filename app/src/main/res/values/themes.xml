@@ -1,9 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.MediQuick" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+
     </style>
 
     <style name="Theme.MediQuick" parent="Base.Theme.MediQuick" />
+
+
+    <style name="Button.Login" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="Button.Register" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/button_register_background</item>
+        <item name="android:textColor">@color/button_register_text</item>
+    </style>
+
+
 </resources>
