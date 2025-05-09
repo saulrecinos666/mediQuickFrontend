@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.mediquick.ui.activities.HomeActivity;
 import com.example.mediquick.ui.activities.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        startActivity(new Intent(this, LoginActivity.class));
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
     }
 }
