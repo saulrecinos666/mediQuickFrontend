@@ -103,13 +103,12 @@
         <Button
             android:id="@+id/btnLogin"
             style="@style/Button.Login"
-            android:textSize="13dp"
             android:layout_width="120dp"
-            android:layout_height="37dp"
+            android:layout_height="38dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/bg_button_login"
             android:layout_marginBottom="15dp"
-            android:text="Ingresar" />
+            android:text="Ingresar"
+            android:textSize="13dp" />
 
         <Button
             android:id="@+id/btnRegister"
@@ -117,7 +116,6 @@
             android:layout_width="120dp"
             android:textSize="12dp"
             android:layout_height="37dp"
-            android:background="@drawable/bg_button_login"
             android:layout_gravity="center_horizontal"
             android:text="Registrarme" />
 
