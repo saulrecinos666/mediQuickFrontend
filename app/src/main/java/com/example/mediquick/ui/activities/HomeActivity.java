@@ -17,10 +17,6 @@ import com.example.mediquick.R;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private ImageButton menuButton;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,15 +28,6 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        menuButton = findViewById(R.id.button);
-
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
 
     }
 }
