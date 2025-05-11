@@ -40,4 +40,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.google.android.material:material:1.12.0") // versión más reciente posible
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
+
+
 }
