@@ -14,8 +14,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "BACKEND_BASE_URL", "\"http://localhost:3000\"")
     }
 
     buildTypes {
@@ -25,11 +23,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            //Configuracion para ip de produccion
-            //buildConfigField("String", "BACKEND_BASE_URL", project.properties["backendBaseUrlRelease"] as? String ?: "\"http://ip_produccion:3000\"")
+            buildConfigField("String", "BACKEND_BASE_URL", "\"http://ip_produccion:3000\"")
         }
         debug {
-            // Agregar configuraciones específicas para debug aquí si es necesario.
+            // Detectar si es emulador o dispositivo físico
+            val isEmulator = System.getenv("ANDROID_AVD_DEVICE") != null
+            val backendUrl = if (isEmulator) {
+                "http://10.0.2.2:3000"
+            } else {
+                "http://192.168.1.31:3000" // Cambia esta IP por tu IP local
+            }
+
+            buildConfigField("String", "BACKEND_BASE_URL", "\"$backendUrl\"")
         }
     }
 
@@ -48,6 +53,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
