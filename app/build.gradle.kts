@@ -31,7 +31,7 @@ android {
             val backendUrl = if (isEmulator) {
                 "http://10.0.2.2:3000"
             } else {
-                "http://192.168.1.31:3000" // Cambia esta IP por tu IP local
+                "http://10.175.160.29:3000" // Cambia esta IP por tu IP local
             }
 
             buildConfigField("String", "BACKEND_BASE_URL", "\"$backendUrl\"")
