@@ -1,5 +1,6 @@
 package com.example.mediquick.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -31,10 +32,9 @@ import retrofit2.http.POST;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmailOrDui, etPassword;
-    private Button btnLogin;
+    private Button btnLogin, btnRegister;
     private LoginService loginService;
-    private String email;
-    private String dui;
+    private String email, dui;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         etEmailOrDui = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.BACKEND_BASE_URL)
@@ -58,6 +59,10 @@ public class LoginActivity extends AppCompatActivity {
         loginService = retrofit.create(LoginService.class);
 
         btnLogin.setOnClickListener(v -> performLogin());
+
+        btnRegister.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        });
     }
 
     private void performLogin() {
@@ -82,6 +87,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Log.e("LoginActivity", "Error del servidor: " + response.code());
                     try {
