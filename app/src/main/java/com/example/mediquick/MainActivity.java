@@ -14,6 +14,9 @@ import com.example.mediquick.ui.activities.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Declaración para el botón
+    // Button buttonOpenChat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,4 +31,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
+
+    // Override para el llamado de la activity
+    //     @Override
+    //    protected void onCreate(Bundle savedInstanceState) {
+    //        super.onCreate(savedInstanceState);
+    //        setContentView(R.layout.activity_main);
+    //
+    //        buttonOpenChat = findViewById(R.id.buttonOpenChat);
+    //
+    //        buttonOpenChat.setOnClickListener(new View.OnClickListener() {
+    //            @Override
+    //            public void onClick(View v) {
+    //                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+    //                startActivity(intent);
+    //            }
+    //        });
+    //    }
+
 }
