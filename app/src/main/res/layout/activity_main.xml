@@ -9,7 +9,7 @@
     android:padding="16dp">
 
     <Button
-        android:id="@+id/buttonOpenChat"
+        android:id="@+id/btnOpenChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Abrir Chat"
