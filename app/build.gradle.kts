@@ -31,7 +31,7 @@ android {
             val backendUrl = if (isEmulator) {
                 "http://10.0.2.2:3000"
             } else {
-                "http://192.168.1.31:3000" // Cambia esta IP por tu IP local
+                "https://medquick-backend-app-953862767231.us-central1.run.app" // Cambia esta IP por tu IP local
             }
 
             buildConfigField("String", "BACKEND_BASE_URL", "\"$backendUrl\"")
@@ -56,7 +56,7 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
+    implementation("io.socket:socket.io-client:2.1.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

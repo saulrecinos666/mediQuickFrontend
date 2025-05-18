@@ -66,9 +66,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             android:background="@drawable/bg_edittext"
-            android:hint="Correo Electrónico"
             android:drawableStart="@drawable/ic_email"
             android:drawablePadding="8dp"
+            android:hint="Correo Electrónico"
             android:inputType="textEmailAddress"
             android:padding="7dp"
             android:textAlignment="viewStart"
@@ -78,10 +78,10 @@
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/lock_alt_svgrepo_com"
-            android:drawablePadding="8dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_edittext"
+            android:drawableStart="@drawable/lock_alt_svgrepo_com"
+            android:drawablePadding="8dp"
             android:hint="Contraseña"
             android:inputType="textPassword"
             android:padding="7dp"
@@ -114,10 +114,10 @@
             android:id="@+id/btnRegister"
             style="@style/Button.Register"
             android:layout_width="120dp"
-            android:textSize="12dp"
             android:layout_height="37dp"
             android:layout_gravity="center_horizontal"
-            android:text="Registrarme" />
+            android:text="Registrarme"
+            android:textSize="12dp" />
 
 
     </LinearLayout>

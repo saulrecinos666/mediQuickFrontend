@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.31</domain> 1
+        <domain includeSubdomains="true">https://medquick-backend-app-953862767231.us-central1.run.app</domain> 1
     </domain-config>
 </network-security-config>
