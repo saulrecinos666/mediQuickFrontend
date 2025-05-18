@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mediquick.BuildConfig;
+import com.example.mediquick.MainActivity;
 import com.example.mediquick.R;
 import com.google.gson.annotations.SerializedName;
 
@@ -72,10 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String storedToken = retrieveAuthToken();
         if(storedToken != null){
-            //Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            //startActivity(intent);
-            //finish();
-            Intent intent = new Intent(LoginActivity.this, MainChatActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -111,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();*/
 
-                    Intent intent = new Intent(LoginActivity.this, MainChatActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, ChatListActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
