@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -6,7 +5,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".ui.activities.TemporalHome">
+
+    <EditText
+        android:id="@+id/inputJwt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese su JWT"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+
+
+    <EditText
+        android:id="@+id/inputSendToId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID del destinatario"
+        android:inputType="text"
+        android:layout_marginBottom="24dp" />
 
     <Button
         android:id="@+id/buttonOpenChat"
@@ -17,4 +34,3 @@
         android:layout_marginTop="32dp"
         tools:ignore="HardcodedText" />
 </LinearLayout>
-    <!--Moris Navas-->
