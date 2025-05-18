@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mediquick.R;
+import com.example.mediquick.ui.adapters.MessageAdapter;
+import com.example.mediquick.ui.items.Message;
 
 import org.json.JSONException;
 import org.json.JSONObject;
