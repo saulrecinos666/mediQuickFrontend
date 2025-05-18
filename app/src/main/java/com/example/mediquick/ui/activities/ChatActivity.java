@@ -55,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
         ImageView sendButton = findViewById(R.id.sendButton);
 
         String jwt = retrieveAuthToken();
-        sendTo = "a41709d5-e6b4-42dd-829e-a16ca4bf9065";
+        sendTo = "57a14478-5d98-4afc-bcfc-8aa75816af41";
         if (sendTo == null) sendTo = "default-room";
 
         userId = extractUserIdFromJwt(jwt);
