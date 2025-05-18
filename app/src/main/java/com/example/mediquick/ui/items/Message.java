@@ -1,4 +1,4 @@
-package com.example.mediquick.ui.activities;
+package com.example.mediquick.ui.items;
 
 public class Message {
     private String text;

@@ -1,4 +1,4 @@
-package com.example.mediquick.ui.activities;
+package com.example.mediquick.ui.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mediquick.R;
+import com.example.mediquick.ui.items.Message;
 
 import java.util.List;
 

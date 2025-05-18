@@ -1,4 +1,4 @@
-package com.example.mediquick.ui.activities;
+package com.example.mediquick.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import com.example.mediquick.R;
+import com.example.mediquick.ui.activities.ChatActivity;
+import com.example.mediquick.ui.items.ChatItem;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatViewHolder> {
 

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.mediquick.R;
+import com.example.mediquick.ui.adapters.ChatListAdapter;
+import com.example.mediquick.ui.items.ChatItem;
 
 public class ChatListActivity extends AppCompatActivity {
 

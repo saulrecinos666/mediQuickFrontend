@@ -1,4 +1,4 @@
-package com.example.mediquick.ui.activities;
+package com.example.mediquick.ui.items;
 public class ChatItem {
     private String name;
     private int imageResId;
