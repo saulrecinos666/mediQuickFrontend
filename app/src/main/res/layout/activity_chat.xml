@@ -102,7 +102,7 @@
         android:gravity="center_vertical">
 
         <EditText
-            android:id="@+id/editTextMessage"
+            android:id="@+id/messageInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -115,7 +115,7 @@
             tools:ignore="Autofill,HardcodedText,TextContrastCheck,TextFields,TouchTargetSizeCheck,VisualLintTextFieldSize" />
 
         <ImageView
-            android:id="@+id/buttonSend"
+            android:id="@+id/sendButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="Send"
