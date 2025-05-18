@@ -29,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        startActivity(new Intent(this, TemporalHome.class));
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
+//        startActivity(new Intent(this, TemporalHome.class));
+//        finish();
     }
 
     // Override para el llamado de la activity

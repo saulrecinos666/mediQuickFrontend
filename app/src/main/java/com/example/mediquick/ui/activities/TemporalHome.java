@@ -20,19 +20,19 @@ public class TemporalHome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        inputJwt = findViewById(R.id.inputJwt);
-
-        inputSendToId = findViewById(R.id.inputSendToId);
-        buttonOpenChat = findViewById(R.id.buttonOpenChat);
-
-        buttonOpenChat.setOnClickListener(v -> {
-            String jwt = inputJwt.getText().toString().trim();
-            String sendToId = inputSendToId.getText().toString().trim();
-
-            Intent intent = new Intent(TemporalHome.this, ChatActivity.class);
-            intent.putExtra("jwt_token", jwt);
-            intent.putExtra("send_to_id", sendToId);
-            startActivity(intent);
-        });
+//        inputJwt = findViewById(R.id.inputJwt);
+//
+//        inputSendToId = findViewById(R.id.inputSendToId);
+//        buttonOpenChat = findViewById(R.id.btnOpenChat);
+//
+//        buttonOpenChat.setOnClickListener(v -> {
+//            String jwt = inputJwt.getText().toString().trim();
+//            String sendToId = inputSendToId.getText().toString().trim();
+//
+//            Intent intent = new Intent(TemporalHome.this, ChatActivity.class);
+//            intent.putExtra("jwt_token", jwt);
+//            intent.putExtra("send_to_id", sendToId);
+//            startActivity(intent);
+//        });
     }
 }

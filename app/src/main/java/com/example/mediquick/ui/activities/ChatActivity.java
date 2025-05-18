@@ -1,5 +1,7 @@
 package com.example.mediquick.ui.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -34,6 +36,10 @@ public class ChatActivity extends AppCompatActivity {
     private String userId;
     private String sendTo = "default-room"; // se puede sobrescribir con el intent
 
+    private static final String SHARED_PREF_NAME = "auth_prefs";
+    private static final String KEY_AUTH_TOKEN = "authToken";
+    private static final String TAG = "MainChatActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +54,8 @@ public class ChatActivity extends AppCompatActivity {
         EditText messageInput = findViewById(R.id.messageInput);
         ImageView sendButton = findViewById(R.id.sendButton);
 
-        String jwt = getIntent().getStringExtra("jwt_token");
-        sendTo = getIntent().getStringExtra("send_to_id");
+        String jwt = retrieveAuthToken();
+        sendTo = "a41709d5-e6b4-42dd-829e-a16ca4bf9065";
         if (sendTo == null) sendTo = "default-room";
 
         userId = extractUserIdFromJwt(jwt);
@@ -151,5 +157,10 @@ public class ChatActivity extends AppCompatActivity {
             socket.disconnect();
             socket.off();
         }
+    }
+
+    private String retrieveAuthToken() {
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getString(KEY_AUTH_TOKEN, null);
     }
 }
