@@ -16,6 +16,12 @@
         android:theme="@style/Theme.MediQuick"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.MainChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.HomeActivity"
             android:exported="false" />
         <activity

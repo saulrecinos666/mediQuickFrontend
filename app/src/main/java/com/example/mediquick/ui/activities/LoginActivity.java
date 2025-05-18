@@ -1,6 +1,8 @@
 package com.example.mediquick.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -35,6 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin, btnRegister;
     private LoginService loginService;
     private String email, dui;
+    private static final String SHARED_PREF_NAME = "auth_prefs";
+    private static final String KEY_AUTH_TOKEN = "authToken";
+    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                 .baseUrl(BuildConfig.BACKEND_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         loginService = retrofit.create(LoginService.class);
 
         btnLogin.setOnClickListener(v -> performLogin());
@@ -63,6 +69,16 @@ public class LoginActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
+
+        String storedToken = retrieveAuthToken();
+        if(storedToken != null){
+            //Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            //startActivity(intent);
+            //finish();
+            Intent intent = new Intent(LoginActivity.this, MainChatActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void performLogin() {
@@ -88,7 +104,14 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    String token = response.body().getToken();
+                    saveAuthToken(token);
+
+                    /*Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();*/
+
+                    Intent intent = new Intent(LoginActivity.this, MainChatActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
@@ -127,6 +150,19 @@ public class LoginActivity extends AppCompatActivity {
         return emailMatcher.matches() || duiMatcher.matches();
     }
 
+    private void saveAuthToken(String token) {
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(KEY_AUTH_TOKEN, token);
+        editor.apply();
+        Log.d(TAG, "Token guardado: " + token);
+    }
+
+    private String retrieveAuthToken() {
+        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getString(KEY_AUTH_TOKEN, null);
+    }
+
     public interface LoginService {
         @POST("/api/auth/login")
         Call<LoginResponse> login(@Body LoginRequest request);
@@ -161,9 +197,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public static class LoginResponse {
         private boolean success;
+        private String token;
 
         public boolean isSuccess() {
             return success;
+        }
+        public String getToken() {
+            return token;
         }
     }
 }
