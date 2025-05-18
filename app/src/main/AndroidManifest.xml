@@ -28,6 +28,9 @@
             android:name=".ui.activities.LoginActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.activities.ChatListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.RegisterActivity"
             android:exported="false" />
         <activity

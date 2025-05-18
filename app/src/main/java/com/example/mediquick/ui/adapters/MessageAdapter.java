@@ -1,5 +1,6 @@
 package com.example.mediquick.ui.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,19 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Message> messages;
+    private Context context;
+    private List<Message> messageList;
     private static final int VIEW_TYPE_SENT = 1;
     private static final int VIEW_TYPE_RECEIVED = 2;
 
-    public MessageAdapter(List<Message> messages) {
-        this.messages = messages;
+    public MessageAdapter(Context context, List<Message> messageList) {
+        this.context = context;
+        this.messageList = messageList;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return messages.get(position).isSent() ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
+        return messageList.get(position).isSent() ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
     }
 
     @NonNull
@@ -43,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = messages.get(position);
+        Message message = messageList.get(position);
         if (holder instanceof SentMessageViewHolder) {
             ((SentMessageViewHolder) holder).messageText.setText(message.getText());
         } else {
@@ -53,7 +56,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return messageList.size();
     }
 
     static class SentMessageViewHolder extends RecyclerView.ViewHolder {
@@ -72,4 +75,3 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 }
-//    <!--Moris Navas-->
