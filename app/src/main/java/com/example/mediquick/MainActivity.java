@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mediquick.ui.activities.ChatActivity;
 import com.example.mediquick.ui.activities.ChatListActivity;
+import com.example.mediquick.ui.activities.HomeActivity;
 import com.example.mediquick.ui.activities.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,9 +36,11 @@ public class MainActivity extends AppCompatActivity {
                 .getString("authToken", null);
 
         if (storedToken != null) {
-            startActivity(new Intent(this, ChatListActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
         } else {
             startActivity(new Intent(this, LoginActivity.class));
+            //startActivity(new Intent(this, HomeActivity.class));
+
         }
 
         finish();
