@@ -249,13 +249,14 @@
                 android:id="@+id/flow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:constraint_referenced_ids="card1,card2,card3,card4,card5"
                 app:flow_horizontalGap="12dp"
                 app:flow_verticalGap="12dp"
-                app:flow_wrapMode="aligned"/>
+                app:flow_wrapMode="aligned"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
