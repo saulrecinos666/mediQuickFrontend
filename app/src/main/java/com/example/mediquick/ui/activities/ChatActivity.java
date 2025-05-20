@@ -1,20 +1,25 @@
 package com.example.mediquick.ui.activities;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
+
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mediquick.BuildConfig;
 import com.example.mediquick.R;
+import com.example.mediquick.data.api.ApiClient;
+import com.example.mediquick.services.ChatService;
+import com.example.mediquick.data.model.ChatMessage;
+import com.example.mediquick.data.model.ChatResponse;
+import com.example.mediquick.utils.SessionManager;
 import com.example.mediquick.ui.adapters.MessageAdapter;
 import com.example.mediquick.ui.items.Message;
 
@@ -28,12 +33,14 @@ import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ChatActivity extends AppCompatActivity {
 
     private static final String TAG = "ChatActivity";
-    private static final String SHARED_PREF_NAME = "auth_prefs";
-    private static final String KEY_AUTH_TOKEN = "authToken";
     private static final String SOCKET_URL = "https://medquick-backend-app-953862767231.us-central1.run.app";
 
     private RecyclerView recyclerViewMessages;
@@ -44,15 +51,49 @@ public class ChatActivity extends AppCompatActivity {
     private String currentChatRoom;
     private String sendTo = "default-room";
 
+    private TextView textContactName;
+
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        sessionManager = new SessionManager(this);
         initViews();
-        initSocket();
+
+        String jwt = sessionManager.getAuthToken();
+
+        if (jwt == null) {
+            showToast("Token no encontrado");
+            finish();
+            return;
+        }
+
+        userId = extractUserIdFromJwt(jwt);
+        if (userId == null) {
+            showToast("Token inválido");
+            finish();
+            return;
+        }
+
+        initSocket(jwt);
 
         String selectedUserId = getIntent().getStringExtra("send_to");
+        String chatId = getIntent().getStringExtra("chat_id");
+        String name = getIntent().getStringExtra("contact_name");
+        // En onCreate, después de obtener chatId:
+        if (chatId != null) {
+            //loadMessages(chatId);
+            Log.i(TAG, "name id" + name);
+            textContactName = findViewById(R.id.textContactName);
+            textContactName.setText(name);
+
+            loadMessages(chatId,jwt);
+        }
+
+
         if (selectedUserId != null) {
             joinNewChatRoom(selectedUserId);
         }
@@ -73,25 +114,13 @@ public class ChatActivity extends AppCompatActivity {
             String message = messageInput.getText().toString().trim();
             if (!message.isEmpty()) {
                 sendMessageToServer(message);
-                appendMessage("Yo: " + message, true);
+                appendMessage(message, true);
                 messageInput.setText("");
             }
         });
     }
 
-    private void initSocket() {
-        String jwt = retrieveAuthToken();
-        if (jwt == null) {
-            Toast.makeText(this, "Token no encontrado", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        userId = extractUserIdFromJwt(jwt);
-        if (userId == null) {
-            Toast.makeText(this, "Token inválido", Toast.LENGTH_LONG).show();
-            return;
-        }
-
+    private void initSocket(String jwt) {
         try {
             IO.Options options = new IO.Options();
             options.query = "token=" + jwt;
@@ -104,25 +133,22 @@ public class ChatActivity extends AppCompatActivity {
             socket.on(Socket.EVENT_CONNECT, args ->
                     runOnUiThread(() -> {
                         Log.i(TAG, "✅ Conectado");
-                        Toast.makeText(this, "Conectado al servidor", Toast.LENGTH_SHORT).show();
-                    })
-            );
+                        showToast("Conectado al servidor");
+                    }));
 
             socket.on("mensaje-desde-servidor", args ->
-                    runOnUiThread(() -> handleIncomingMessage((JSONObject) args[0]))
-            );
+                    runOnUiThread(() -> handleIncomingMessage((JSONObject) args[0])));
 
             socket.on(Socket.EVENT_CONNECT_ERROR, args ->
                     runOnUiThread(() -> {
                         Log.e(TAG, "❌ Error de conexión: " + args[0]);
-                        Toast.makeText(this, "Error al conectar al servidor", Toast.LENGTH_LONG).show();
-                    })
-            );
+                        showToast("Error al conectar al servidor");
+                    }));
 
             socket.connect();
 
         } catch (URISyntaxException e) {
-            Log.e(TAG, "URISyntaxException: " + e.getMessage(), e);
+            Log.e(TAG, "Error al crear conexión Socket.IO", e);
         }
     }
 
@@ -139,15 +165,14 @@ public class ChatActivity extends AppCompatActivity {
 
     private void handleIncomingMessage(JSONObject data) {
         try {
-            String fullName = data.getString("fullName");
             String message = data.getString("message");
             String fromId = data.getString("from");
 
             if (!fromId.equals(userId)) {
-                appendMessage(fullName + ": " + message, false);
+                appendMessage(message, false);
             }
         } catch (JSONException e) {
-            Log.e(TAG, "Error al recibir mensaje", e);
+            Log.e(TAG, "Error al procesar mensaje entrante", e);
         }
     }
 
@@ -197,9 +222,8 @@ public class ChatActivity extends AppCompatActivity {
         return idA.compareTo(idB) < 0 ? "chat:" + idA + ":" + idB : "chat:" + idB + ":" + idA;
     }
 
-    private String retrieveAuthToken() {
-        SharedPreferences sharedPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return sharedPref.getString(KEY_AUTH_TOKEN, null);
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -210,4 +234,33 @@ public class ChatActivity extends AppCompatActivity {
             socket.off();
         }
     }
+    private void loadMessages(String chatId, String jwt) {
+        Retrofit retrofit = ApiClient.getAuthenticatedClient(BuildConfig.BACKEND_BASE_URL + "/", jwt);
+        ChatService chatService = retrofit.create(ChatService.class);
+
+        Call<ChatResponse> call = chatService.getChatMessages(chatId);
+        call.enqueue(new Callback<ChatResponse>() {
+            @Override
+            public void onResponse(Call<ChatResponse> call, Response<ChatResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i(TAG, "📩 Mensajes cargados: " + response.body().data.size());
+                    for (ChatMessage msg : response.body().data) {
+                        boolean isSentByUser = msg.userId.equals(userId);
+                        messageList.add(new Message(msg.content, isSentByUser));
+                    }
+                    messageAdapter.notifyDataSetChanged();
+                    recyclerViewMessages.scrollToPosition(messageList.size() - 1);
+                } else {
+                    Log.e(TAG, "⚠️ Error en respuesta: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChatResponse> call, Throwable t) {
+                Log.e(TAG, "❌ Error al obtener mensajes", t);
+            }
+        });
+    }
+
+
 }
