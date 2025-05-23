@@ -38,10 +38,16 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
         holder.name.setText(chat.getName());
         holder.imageProfile.setImageResource(chat.getImageResId());
 
+        // Mostrar el remitente + mensaje
+        String formattedMessage = chat.getSenderLabel() + ": " + chat.getLastMessage();
+        holder.lastMessage.setText(formattedMessage);
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("contact_name", chat.getName());
             intent.putExtra("image_res", chat.getImageResId());
+            intent.putExtra("send_to", chat.getUserId());
+            intent.putExtra("chat_id", String.valueOf(chat.getChatId()));
             context.startActivity(intent);
         });
     }
@@ -53,13 +59,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
 
     static class ChatViewHolder extends RecyclerView.ViewHolder {
         TextView name;
+        TextView lastMessage;
         ImageView imageProfile;
 
         ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.textContactName);
+            lastMessage = itemView.findViewById(R.id.textLastMessage);
             imageProfile = itemView.findViewById(R.id.imageProfile);
         }
     }
 }
-//    <!--Moris Navas-->
+
