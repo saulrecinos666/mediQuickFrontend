@@ -28,7 +28,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="default_channel" />
-
+        <activity
+            android:name=".ui.activities.AdminAcceptAppointmentsActivity"
+            android:exported="false" />
 <!--        <activity-->
 <!--            android:name=".ui.activities.MainChatActivity"-->
 <!--            android:exported="false" />-->
