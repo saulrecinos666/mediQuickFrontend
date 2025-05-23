@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -142,7 +143,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Log.i(TAG, "Dispositivo registrado correctamente");
+                    Toast.makeText(HomeActivity.this, "Dispositivo registrado correctamente", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e(TAG, "Error al registrar dispositivo: " + response.code());
                 }
