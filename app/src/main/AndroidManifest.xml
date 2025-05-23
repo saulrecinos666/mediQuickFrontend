@@ -33,6 +33,7 @@
 <!--            android:name=".ui.activities.MainChatActivity"-->
 <!--            android:exported="false" />-->
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.ChatActivity"
             android:exported="false" />
         <activity
@@ -42,6 +43,7 @@
             android:name=".ui.activities.LoginActivity"
             android:exported="false" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.ChatListActivity"
             android:exported="false" />
         <activity
@@ -49,6 +51,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -35,7 +35,7 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/menu_vertical_svgrepo_com"
+                android:src="@drawable/menu_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
