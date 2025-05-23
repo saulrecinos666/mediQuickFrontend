@@ -3,4 +3,13 @@
     <string name="bienvenido_a_nuestra_aplicaci_n_de_gesti_n_de_citas_m_dicas_con_nuestra_plataforma_podr_s_agendar_citas_de_manera_f_cil_y_r_pida">Bienvenido a nuestra aplicación de gestión de citas médicas. Con nuestra plataforma, podrás agendar citas de manera fácil y rápida.</string>
     <string name="iniciar_sesion">INICIAR SESION</string>
     <string name="registrarse">REGISTRARSE</string>
+
+    <string name="back">Atrás</string>
+    <string name="chats">Chats</string>
+    <string name="contact_name">Lorem Ipsum</string>
+    <string name="last_seen">Última vez hace poco</string>
+    <string name="contact_photo">Foto del contacto</string>
+    <string name="message_hint">Escribe un mensaje</string>
+    <string name="send">Enviar</string>
+
 </resources>

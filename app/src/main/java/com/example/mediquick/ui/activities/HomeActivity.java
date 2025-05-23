@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,6 +74,13 @@ public class HomeActivity extends AppCompatActivity {
                 "Empieza una conversación",
                 R.drawable.chat_round_dots,
                 ChatListActivity.class
+        );
+        setupQuickCard(
+                R.id.card2,
+                "Agendar citas",
+                "Agenda las citas de tus pacientes",
+                R.drawable.chat_round_dots,
+                AdminAcceptAppointmentsActivity.class
         );
 
         // Puedes agregar más tarjetas reutilizando setupQuickCard
@@ -142,6 +150,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
+                    // Toast
+                    Toast.makeText(HomeActivity.this, "Token FCM registrado correctamente", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "Dispositivo registrado correctamente");
                 } else {
                     Log.e(TAG, "Error al registrar dispositivo: " + response.code());

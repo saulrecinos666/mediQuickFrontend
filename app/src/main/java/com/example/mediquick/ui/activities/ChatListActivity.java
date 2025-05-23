@@ -53,6 +53,9 @@ public class ChatListActivity extends AppCompatActivity {
 
         setupRecyclerView();
         setupRetrofitClient();
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
     }
 
     @Override
