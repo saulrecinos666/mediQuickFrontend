@@ -75,6 +75,13 @@ public class HomeActivity extends AppCompatActivity {
                 R.drawable.chat_round_dots,
                 ChatListActivity.class
         );
+        setupQuickCard(
+                R.id.card2,
+                "Agendar citas",
+                "Agenda las citas de tus pacientes",
+                R.drawable.chat_round_dots,
+                AdminAcceptAppointmentsActivity.class
+        );
 
         // Puedes agregar más tarjetas reutilizando setupQuickCard
         // setupQuickCard(R.id.card2, "Citas", "Ver próximas citas", R.drawable.calendar, AppointmentsActivity.class);
@@ -143,7 +150,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(HomeActivity.this, "Dispositivo registrado correctamente", Toast.LENGTH_SHORT).show();
+                    // Toast
+                    Toast.makeText(HomeActivity.this, "Token FCM registrado correctamente", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Dispositivo registrado correctamente");
                 } else {
                     Log.e(TAG, "Error al registrar dispositivo: " + response.code());
                 }

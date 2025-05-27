@@ -6,20 +6,16 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MediQuick"
         tools:targetApi="31">
-        <activity
-            android:windowSoftInputMode="adjustResize"
-            android:name=".ui.activities.DoctorQueueActivity"
-            android:exported="false" />
 
         <service
             android:name=".services.FirebaseService"
@@ -31,13 +27,17 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="default_channel" /> <!-- <activity -->
-        <!-- android:name=".ui.activities.MainChatActivity" -->
-        <!-- android:exported="false" /> -->
+            android:value="default_channel" />
         <activity
+            android:name=".ui.activities.AdminAcceptAppointmentsActivity"
+            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".ui.activities.MainChatActivity"-->
+<!--            android:exported="false" />-->
+        <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.ChatActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".ui.activities.HomeActivity"
             android:exported="false" />
@@ -45,22 +45,23 @@
             android:name=".ui.activities.LoginActivity"
             android:exported="false" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.ChatListActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".ui.activities.RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
