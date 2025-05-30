@@ -30,7 +30,7 @@ android {
             // Detectar si es emulador o dispositivo físico
             val isEmulator = System.getenv("ANDROID_AVD_DEVICE") != null
             val backendUrl = if (isEmulator) {
-                "http://10.0.2.2:3000"
+                "https://medquick-backend-app-953862767231.us-central1.run.app"
             } else {
                 "https://medquick-backend-app-953862767231.us-central1.run.app" // Cambia esta IP por tu IP local
             }
