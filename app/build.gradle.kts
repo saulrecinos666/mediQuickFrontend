@@ -26,6 +26,7 @@ android {
             )
             buildConfigField("String", "BACKEND_BASE_URL", "\"http://ip_produccion:3000\"")
         }
+
         debug {
             // Detectar si es emulador o dispositivo físico
             val isEmulator = System.getenv("ANDROID_AVD_DEVICE") != null
@@ -41,6 +42,10 @@ android {
 
     buildFeatures {
         buildConfig = true
+
+        // ✅ Se habilita ViewBinding para permitir acceso seguro a los elementos de los layouts
+        // sin necesidad de usar findViewById() manualmente.
+        viewBinding = true
     }
 
     compileOptions {
@@ -55,18 +60,18 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
+    // ✅ Retrofit para peticiones HTTP
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // ✅ Socket.IO si usas sockets para comunicación en tiempo real
     implementation("io.socket:socket.io-client:2.1.0")
-    // Import the Firebase BoM
+
+    // ✅ Firebase (Analytics y Mensajería)
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
-
-
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
     implementation("com.google.firebase:firebase-analytics")
-
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

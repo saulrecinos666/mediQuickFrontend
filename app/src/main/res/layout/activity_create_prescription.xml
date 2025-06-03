@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtPacienteHeader"
+        android:text="Receta para: Paciente"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edtNotas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/edit_text"
+        android:hint="Notas generales"
+        android:maxLines="4"
+        android:minLines="2"
+        android:padding="12dp"
+        tools:ignore="Autofill,HardcodedText,TextContrastCheck,TextFields,VisualLintTextFieldSize" />
+
+    <TextView
+        android:text="Medicamentos"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerForm"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btnAgregar"
+        android:text="Añadir otro medicamento"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText,VisualLintButtonSize" />
+
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:text="Guardar Receta"
+        android:textColor="#FFF"
+        tools:ignore="HardcodedText,TextContrastCheck,VisualLintButtonSize" />
+</LinearLayout>
