@@ -41,6 +41,15 @@
             android:name=".ui.activities.ChatActivity"
             android:exported="false" />
         <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.AssignedAppointmentsActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.CreatePrescriptionActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.activities.HomeActivity"
             android:exported="false" />
         <activity
