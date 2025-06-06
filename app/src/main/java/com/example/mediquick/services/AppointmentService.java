@@ -2,9 +2,10 @@ package com.example.mediquick.services;
 
 import com.example.mediquick.data.model.AllDoctorsResponse;
 import com.example.mediquick.data.model.AppointmentResponse;
-import com.example.mediquick.data.model.ChatResponse;
-import com.example.mediquick.data.model.DeviceRequest;
+import com.example.mediquick.data.model.GetAppointmentResponse;
 import com.example.mediquick.data.model.GetAssignedAppointmentsResponse;
+import com.example.mediquick.data.model.PrescriptionRequest;
+import com.example.mediquick.data.model.ResponsePrescription;
 import com.example.mediquick.data.model.ScheduleRequest;
 import com.example.mediquick.data.model.ScheduleResponse;
 
@@ -27,9 +28,15 @@ public interface AppointmentService {
     @GET("api/appointments/filter")
     Call<GetAssignedAppointmentsResponse> getAssignedAppointments(@Query("doctorUserId") String doctorUserId);
 
+    @GET("api/appointments/{appointmentId}")
+    Call<GetAppointmentResponse> getAppointmentById(@Path("appointmentId") String appointmentId);
+
     @PATCH("api/appointments/schedule/{medicalAppointmentId}")
     Call<ScheduleResponse> scheduleAppointment(
             @Path("medicalAppointmentId") String appointmentId,
             @Body ScheduleRequest request
     );
+
+    @POST("api/prescriptions")
+    Call<ResponsePrescription> createPrescription(@Body PrescriptionRequest prescription);
 }

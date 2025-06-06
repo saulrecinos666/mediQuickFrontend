@@ -130,31 +130,6 @@ public class AssignedAppointmentsActivity extends AppCompatActivity {
                         handleApiError(t);
                     }
                 });
-
-        // Opción 2: Filtrar por doctor específico (descomenta si necesitas filtrar)
-        /*
-        String doctorId = getDoctorIdFromSession(); // Implementa este método
-        if (doctorId != null && !doctorId.isEmpty()) {
-            apiService.getAssignedAppointments(doctorId)
-                .enqueue(new Callback<GetAssignedAppointmentsResponse>() {
-                    @Override
-                    public void onResponse(Call<GetAssignedAppointmentsResponse> call, Response<GetAssignedAppointmentsResponse> response) {
-                        showLoading(false);
-                        handleAppointmentsResponse(response);
-                    }
-
-                    @Override
-                    public void onFailure(Call<GetAssignedAppointmentsResponse> call, Throwable t) {
-                        showLoading(false);
-                        handleApiError(t);
-                    }
-                });
-        } else {
-            showLoading(false);
-            Toast.makeText(this, "No se pudo obtener el ID del doctor", Toast.LENGTH_SHORT).show();
-            loadSimulatedData(); // Fallback
-        }
-        */
     }
 
     private void handleAppointmentsResponse(Response<GetAssignedAppointmentsResponse> response) {
