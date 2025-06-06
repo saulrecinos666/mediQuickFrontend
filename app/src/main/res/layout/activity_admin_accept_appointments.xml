@@ -3,25 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="#FFFFFF">
+
 
     <TextView
         android:id="@+id/title"
-        android:text="Citas Pendientes"
+        android:text="Citas pendientes por asignar"
         android:textStyle="bold"
         android:layout_margin="16dp"
         android:textSize="20sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText" />
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerAppointments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title"
-        android:padding="8dp"
-        tools:ignore="SpeakableTextPresentCheck" />
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/emptyView"
@@ -32,7 +32,6 @@
         android:drawableTop="@drawable/ic_empty_calendar"
         android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText,UseCompatTextViewDrawableXml" />
+        android:layout_height="wrap_content" />
 </RelativeLayout>
     <!--Moris Navas-->
