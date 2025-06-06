@@ -8,6 +8,7 @@
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -39,6 +40,15 @@
             android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.ChatActivity"
             android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.AssignedAppointmentsActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.CreatePrescriptionActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.activities.HomeActivity"
             android:exported="false" />
