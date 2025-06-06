@@ -82,14 +82,25 @@ public class LoginActivity extends AppCompatActivity {
         String email = isEmail(emailOrDui) ? emailOrDui : "";
         String dui = isDui(emailOrDui) ? emailOrDui : "";
 
+        // ✅ AGREGAR ESTOS LOGS
+        Log.d(TAG, "URL Base: " + BuildConfig.BACKEND_BASE_URL);
+        Log.d(TAG, "Email: " + email);
+        Log.d(TAG, "DUI: " + dui);
+        Log.d(TAG, "Iniciando login...");
+
         loginService.login(new LoginRequest(email, dui, password))
                 .enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        // ✅ AGREGAR ESTOS LOGS
+                        Log.d(TAG, "Respuesta recibida - Código: " + response.code());
+                        Log.d(TAG, "URL completa: " + call.request().url().toString());
+
                         if (response.isSuccessful() && response.body() != null) {
                             String token = response.body().getToken();
-                            sessionManager.saveAuthToken(token);
+                            Log.d(TAG, "Token recibido: " + (token != null ? "Sí" : "No"));
 
+                            sessionManager.saveAuthToken(token);
                             Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
                             goToMainActivity();
                         } else {
@@ -99,8 +110,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        // ✅ MEJORAR ESTE LOG
+                        Log.e(TAG, "Error de conexión: " + t.getMessage());
+                        Log.e(TAG, "URL que falló: " + call.request().url().toString());
                         Toast.makeText(LoginActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e(TAG, "onFailure: ", t);
+                        t.printStackTrace();
                     }
                 });
     }
