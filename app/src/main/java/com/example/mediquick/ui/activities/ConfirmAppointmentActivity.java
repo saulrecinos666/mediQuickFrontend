@@ -27,13 +27,13 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
     private TextView txtResumen;
     private Button btnConfirmar;
     private ProgressBar progressBar;
-    private SessionManager sessionManager;
 
     // Datos recibidos del Intent
     private String procedureId, procedureName, branchId, branchName;
 
     // API
     private AppointmentService apiService;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
