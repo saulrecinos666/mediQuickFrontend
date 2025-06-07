@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class ProcedureListActivity extends AppCompatActivity {
     private TextView txtHeader, emptyState;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView btnBackToBranches;
     private List<MedicalProcedure> procedures = new ArrayList<>();
     private ProcedureAdapter adapter;
 
@@ -52,6 +54,7 @@ public class ProcedureListActivity extends AppCompatActivity {
 
         receiveIntentData();
         initViews();
+        setupClickListeners();
         setupApiService();
         setupRecyclerView();
         setupSwipeRefresh();
@@ -79,13 +82,22 @@ public class ProcedureListActivity extends AppCompatActivity {
         txtHeader = findViewById(R.id.txtNombreSucursal);
         emptyState = findViewById(R.id.emptyViewProcedimientos);
         progressBar = findViewById(R.id.progressBarProcedimientos);
-       // swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Agregar al layout si no existe
+        btnBackToBranches = findViewById(R.id.btnBackToBranches);
+        // swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Agregar al layout si no existe
 
         // Configurar header
-        String headerText = "Procedimientos en: " + (branchName != null ? branchName : "Sucursal");
+        String headerText = branchName != null ? branchName : "Sucursal";
         txtHeader.setText(headerText);
 
         Log.d(TAG, "Views inicializadas. Header: " + headerText);
+    }
+
+    private void setupClickListeners() {
+        // ✅ CONFIGURAR EL BOTÓN DE RETROCESO
+        btnBackToBranches.setOnClickListener(v -> {
+            Log.d(TAG, "Back button presionado - volviendo a sucursales");
+            onBackPressed();
+        });
     }
 
     private void setupApiService() {
@@ -345,6 +357,12 @@ public class ProcedureListActivity extends AppCompatActivity {
         Log.e(TAG, "Mostrando error: " + message);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         updateEmptyState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "Back button presionado - volviendo a la pantalla de sucursales");
+        super.onBackPressed();
     }
 
     @Override

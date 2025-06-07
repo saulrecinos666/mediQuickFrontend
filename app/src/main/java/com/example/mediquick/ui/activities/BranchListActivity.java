@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class BranchListActivity extends AppCompatActivity {
     private TextView txtHeader, emptyState;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView btnBackToInstitutions;
     private List<Branch> branches = new ArrayList<>();
     private BranchAdapter adapter;
 
@@ -52,6 +54,7 @@ public class BranchListActivity extends AppCompatActivity {
 
         receiveIntentData();
         initViews();
+        setupClickListeners();
         setupApiService();
         setupRecyclerView();
         setupSwipeRefresh();
@@ -79,13 +82,22 @@ public class BranchListActivity extends AppCompatActivity {
         txtHeader = findViewById(R.id.txtNombreInstitucion);
         emptyState = findViewById(R.id.emptyViewSucursales);
         progressBar = findViewById(R.id.progressBarSucursales);
+        btnBackToInstitutions = findViewById(R.id.btnBackToInstitutions);
         //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Agregar al layout si no existe
 
         // Configurar header
-        String headerText = "Sucursales de: " + (institutionName != null ? institutionName : "Institución");
+        String headerText = institutionName != null ? institutionName : "Institución";
         txtHeader.setText(headerText);
 
         Log.d(TAG, "Views inicializadas. Header: " + headerText);
+    }
+
+    private void setupClickListeners() {
+        // ✅ CONFIGURAR EL BOTÓN DE RETROCESO
+        btnBackToInstitutions.setOnClickListener(v -> {
+            Log.d(TAG, "Back button presionado - volviendo a instituciones");
+            onBackPressed();
+        });
     }
 
     private void setupApiService() {
@@ -201,10 +213,10 @@ public class BranchListActivity extends AppCompatActivity {
 
         branch.setBranchId(branchData.getBranchId());
         branch.setBranchName(branchData.getBranchName());
-       // branch.setBranchAcronym(branchData.getBranchAcronym());
+        // branch.setBranchAcronym(branchData.getBranchAcronym());
         branch.setBranchDescription(branchData.getBranchDescription());
         branch.setBranchFullAddress(branchData.getBranchFullAddress());
-       // branch.setBranchStatus(branchData.isBranchStatus());
+        // branch.setBranchStatus(branchData.isBranchStatus());
         //branch.setInstitutionId(branchData.getInstitutionId());
 
         // Coordenadas (pueden ser null)
@@ -268,8 +280,8 @@ public class BranchListActivity extends AppCompatActivity {
         //branch2.setBranchAcronym("SN");
         branch2.setBranchFullAddress("Col. La Esperanza, Calle Ficticia");
         branch2.setBranchDescription("Atención general y odontológica");
-       // branch2.setBranchStatus(true);
-       // branch2.setInstitutionId(institutionId);
+        // branch2.setBranchStatus(true);
+        // branch2.setInstitutionId(institutionId);
         branches.add(branch2);
 
         Log.i(TAG, "✅ Datos simulados cargados: " + branches.size() + " sucursales");
@@ -320,6 +332,12 @@ public class BranchListActivity extends AppCompatActivity {
         Log.e(TAG, "Mostrando error: " + message);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         updateEmptyState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "Back button presionado - volviendo a la pantalla de instituciones");
+        super.onBackPressed();
     }
 
     @Override
