@@ -33,6 +33,23 @@
             android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.AdminAcceptAppointmentsActivity"
             android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.InstitutionListActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.BranchListActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.ProcedureListActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.ConfirmAppointmentActivity"
+            android:exported="false" />
+
 <!--        <activity-->
 <!--            android:name=".ui.activities.MainChatActivity"-->
 <!--            android:exported="false" />-->

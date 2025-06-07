@@ -3,37 +3,70 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="Instituciones"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_marginBottom="12dp"
-        android:layout_width="wrap_content"
+    <!-- Header con flecha de retroceso y título -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="HardcodedText" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
 
-    <ProgressBar
-        android:id="@+id/progressBarInstituciones"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_arrow"
+            android:contentDescription="Retroceder"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:layout_marginEnd="16dp"
+            tools:ignore="UseAppTrio" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerInstituciones"
+        <TextView
+            android:text="Instituciones"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <!-- Contenido principal -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
 
-    <TextView
-        android:id="@+id/emptyView"
-        android:text="No hay instituciones disponibles"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText" />
+        <ProgressBar
+            android:id="@+id/progressBarInstituciones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerInstituciones"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/emptyView"
+            android:text="No hay instituciones disponibles"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
 </LinearLayout>
