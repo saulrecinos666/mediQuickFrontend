@@ -1,5 +1,8 @@
 package com.example.mediquick.ui.activities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +19,7 @@ import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.utils.SessionManager;
 import com.google.gson.Gson;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,13 +31,12 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
     private TextView txtResumen;
     private Button btnConfirmar;
     private ProgressBar progressBar;
-
+    private SessionManager sessionManager;
     // Datos recibidos del Intent
     private String procedureId, procedureName, branchId, branchName;
 
     // API
     private AppointmentService apiService;
-    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,21 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
     }
 
     private void setupApiService() {
-        apiService = ApiClient.getUnauthenticatedClient(BuildConfig.BACKEND_BASE_URL).create(AppointmentService.class);
+        // ✅ AGREGAR ESTA LÍNEA - Inicializar SessionManager
+        sessionManager = new SessionManager(this);
+
+        String jwt = sessionManager.getAuthToken();
+
+        Log.d(TAG, "JWT Token presente: " + (jwt != null && !jwt.isEmpty()));
+
+        // Usar cliente autenticado si hay token
+        if (jwt != null && !jwt.trim().isEmpty()) {
+            apiService = ApiClient.getAuthenticatedClient(BuildConfig.BACKEND_BASE_URL, jwt).create(AppointmentService.class);
+            Log.d(TAG, "API Service configurado CON autenticación");
+        } else {
+            apiService = ApiClient.getUnauthenticatedClient(BuildConfig.BACKEND_BASE_URL).create(AppointmentService.class);
+            Log.w(TAG, "API Service configurado SIN autenticación - Token no disponible");
+        }
 
         Log.d(TAG, "API Service configurado con base URL: " + BuildConfig.BACKEND_BASE_URL);
     }
@@ -109,36 +126,74 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
         Log.d(TAG, "Resumen mostrado: " + summary.toString());
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
+        Log.d(TAG, "Red disponible: " + connected);
+        return connected;
+    }
+    // Actualiza tu método confirmarCita() con estos logs adicionales:
+
+    // Actualiza tu método confirmarCita() para usar RequestBody:
+
     private void confirmarCita() {
-        // Validar datos antes de enviar
-        if (!isDataValid()) {
-            showError("Error: Datos de cita incompletos");
-            return;
-        }
+        // ... código de validación existente ...
 
         Log.d(TAG, "=== INICIANDO CREACIÓN DE CITA ===");
         Log.d(TAG, "Procedure ID: '" + procedureId + "' (length: " + procedureId.length() + ")");
         Log.d(TAG, "Branch ID: '" + branchId + "' (length: " + branchId.length() + ")");
-        Log.d(TAG, "Token disponible: " + (sessionManager.getAuthToken() != null));
+
+        // ... validación de sessionManager ...
 
         // Mostrar loading
         showLoading(true);
 
-        // Enviar request a la API usando form data
-        apiService.createAppointment(procedureId, branchId)
-                .enqueue(new Callback<CreateAppointmentResponse>() {
-                    @Override
-                    public void onResponse(Call<CreateAppointmentResponse> call, Response<CreateAppointmentResponse> response) {
-                        showLoading(false);
-                        handleAppointmentResponse(response);
-                    }
+        Log.d(TAG, "=== ENVIANDO MULTIPART FORM DATA ===");
+        Log.d(TAG, "Usando @Multipart con @Part");
 
-                    @Override
-                    public void onFailure(Call<CreateAppointmentResponse> call, Throwable t) {
-                        showLoading(false);
-                        handleAppointmentError(t);
-                    }
-                });
+        // ✅ CREAR REQUEST BODIES PARA MULTIPART
+        RequestBody branchIdBody = RequestBody.create(
+                okhttp3.MediaType.parse("text/plain"),
+                branchId
+        );
+
+        RequestBody medicalProcedureIdBody = RequestBody.create(
+                okhttp3.MediaType.parse("text/plain"),
+                procedureId
+        );
+
+        Log.d(TAG, "RequestBodies creados correctamente");
+
+        // Enviar request a la API usando multipart data
+        Call<CreateAppointmentResponse> call = apiService.createAppointment(branchIdBody, medicalProcedureIdBody);
+
+        // Log del request antes de enviarlo
+        Log.d(TAG, "Call creado: " + call.getClass().getSimpleName());
+        Log.d(TAG, "Request URL: " + call.request().url());
+        Log.d(TAG, "Request Method: " + call.request().method());
+
+        call.enqueue(new Callback<CreateAppointmentResponse>() {
+            @Override
+            public void onResponse(Call<CreateAppointmentResponse> call, Response<CreateAppointmentResponse> response) {
+                Log.d(TAG, "=== HEADERS DE LA REQUEST ENVIADA ===");
+                Log.d(TAG, "Final Content-Type: " + call.request().header("Content-Type"));
+                Log.d(TAG, "Final Authorization: " + call.request().header("Authorization"));
+
+                showLoading(false);
+                handleAppointmentResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<CreateAppointmentResponse> call, Throwable t) {
+                Log.e(TAG, "=== REQUEST FAILURE ===");
+                Log.e(TAG, "Request that failed: " + call.request().url());
+                showLoading(false);
+                handleAppointmentError(t);
+            }
+        });
     }
 
     private boolean isDataValid() {

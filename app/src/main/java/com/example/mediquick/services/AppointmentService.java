@@ -14,24 +14,24 @@ import com.example.mediquick.data.model.ResponsePrescription;
 import com.example.mediquick.data.model.ScheduleRequest;
 import com.example.mediquick.data.model.ScheduleResponse;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AppointmentService {
     @GET("api/appointments/status/{status}")
-        // ✅ Obtener todas las citas
     Call<AppointmentResponse> getAllAppointments(@Path("status") String statusId);
 
-
     @GET("api/users/all-doctors")
-        // Listar todos los doctores
     Call<AllDoctorsResponse> getAllDoctors();
 
     @GET("api/appointments/filter")
@@ -59,10 +59,9 @@ public interface AppointmentService {
     Call<GetAllProceduresByBranchIdResponse> getAllProceduresByBranchId(@Query("branchId") String branchId);
 
     @POST("api/appointments")
-    @FormUrlEncoded
+    @Multipart
     Call<CreateAppointmentResponse> createAppointment(
-            @Field("medicalProcedureId") String medicalProcedureId,
-            @Field("branchId") String branchId
+            @Part("branchId") RequestBody branchId,
+            @Part("medicalProcedureId") RequestBody medicalProcedureId
     );
-
 }

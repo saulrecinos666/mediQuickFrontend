@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class InstitutionListActivity extends AppCompatActivity {
         setupApiService();
         setupRecyclerView();
         setupSwipeRefresh();
+        setupBackButton(); // ← Agregar esto
 
         cargarInstituciones();
     }
@@ -276,5 +278,13 @@ public class InstitutionListActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "InstitutionListActivity destruida");
+    }
+
+    private void setupBackButton() {
+        ImageView btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> {
+            Log.d(TAG, "Back button presionado");
+            onBackPressed(); // O finish() para cerrar la actividad
+        });
     }
 }

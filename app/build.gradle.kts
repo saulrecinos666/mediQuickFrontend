@@ -60,6 +60,7 @@ dependencies {
     implementation("io.socket:socket.io-client:2.1.0")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.squareup.okio:okio:3.5.0")
 
     // ✅ Firebase (Analytics y Mensajería)
     implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
