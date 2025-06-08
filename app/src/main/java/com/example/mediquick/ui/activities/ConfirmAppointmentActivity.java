@@ -1,6 +1,7 @@
 package com.example.mediquick.ui.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -135,18 +136,35 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
         Log.d(TAG, "Red disponible: " + connected);
         return connected;
     }
-    // Actualiza tu método confirmarCita() con estos logs adicionales:
-
-    // Actualiza tu método confirmarCita() para usar RequestBody:
 
     private void confirmarCita() {
-        // ... código de validación existente ...
+        // Validar datos antes de enviar
+        if (!isDataValid()) {
+            showError("Error: Datos de cita incompletos");
+            return;
+        }
+
+        if (!isNetworkAvailable()) {
+            showError("Error: Sin conexión a internet");
+            return;
+        }
 
         Log.d(TAG, "=== INICIANDO CREACIÓN DE CITA ===");
         Log.d(TAG, "Procedure ID: '" + procedureId + "' (length: " + procedureId.length() + ")");
         Log.d(TAG, "Branch ID: '" + branchId + "' (length: " + branchId.length() + ")");
 
-        // ... validación de sessionManager ...
+        // Verificar sessionManager
+        if (sessionManager != null) {
+            String token = sessionManager.getAuthToken();
+            Log.d(TAG, "Token disponible: " + (token != null && !token.trim().isEmpty()));
+            if (token != null) {
+                Log.d(TAG, "Token length: " + token.length());
+            }
+        } else {
+            Log.e(TAG, "❌ SessionManager es null - Esto es un error crítico");
+            showError("Error: Sesión no disponible");
+            return;
+        }
 
         // Mostrar loading
         showLoading(true);
@@ -215,9 +233,9 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
             Log.d(TAG, "Message: " + apiResponse.getMessage());
 
             if (apiResponse.isSuccess()) {
-                // Éxito
+                // ✅ ÉXITO - REDIRIGIR AL HOME
                 Log.i(TAG, "✅ Cita creada exitosamente");
-                showSuccessAndFinish(apiResponse.getMessage());
+                showSuccessAndRedirectToHome(apiResponse.getMessage());
             } else {
                 // API respondió pero con error
                 Log.w(TAG, "❌ Error de la API: " + apiResponse.getMessage());
@@ -280,8 +298,49 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * ✅ NUEVO MÉTODO: Muestra éxito y redirige al HomeActivity
+     */
+    private void showSuccessAndRedirectToHome(String message) {
+        Log.i(TAG, "🎉 Mostrando éxito y redirigiendo al Home: " + message);
+
+        String successMessage = message != null && !message.isEmpty() ?
+                message : "✅ Cita creada exitosamente. Recibirás notificación cuando esté agendada";
+
+        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
+
+        // ✅ REDIRIGIR AL HOME DESPUÉS DE UN BREVE DELAY
+        txtResumen.postDelayed(() -> {
+            Log.d(TAG, "Redirigiendo a HomeActivity después de crear cita exitosamente");
+            redirectToHome();
+        }, 1500);
+    }
+
+    /**
+     * ✅ NUEVO MÉTODO: Redirige al HomeActivity limpiando el stack
+     */
+    private void redirectToHome() {
+        Intent intent = new Intent(ConfirmAppointmentActivity.this, HomeActivity.class);
+
+        // ✅ LIMPIAR TODO EL STACK DE NAVEGACIÓN
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        // ✅ OPCIONAL: Agregar extra para mostrar mensaje de éxito en Home
+        intent.putExtra("show_success_message", true);
+        intent.putExtra("success_message", "¡Cita creada exitosamente!");
+
+        Log.d(TAG, "Iniciando HomeActivity con flags para limpiar stack");
+        startActivity(intent);
+
+        // Finalizar esta actividad
+        finish();
+    }
+
+    /**
+     * ✅ MÉTODO LEGACY: Mantener para casos donde solo se cierre sin redirigir
+     */
     private void showSuccessAndFinish(String message) {
-        Log.i(TAG, "🎉 Mostrando éxito: " + message);
+        Log.i(TAG, "🎉 Mostrando éxito y cerrando: " + message);
 
         String successMessage = message != null && !message.isEmpty() ?
                 message : "✅ Cita creada. Recibirás notificación cuando esté agendada";
