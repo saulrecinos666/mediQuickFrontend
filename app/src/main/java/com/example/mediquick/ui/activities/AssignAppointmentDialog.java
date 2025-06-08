@@ -20,6 +20,7 @@ import com.example.mediquick.BuildConfig;
 import com.example.mediquick.R;
 import com.example.mediquick.data.api.ApiClient;
 import com.example.mediquick.data.model.AllDoctorsResponse;
+import com.example.mediquick.data.model.Doctor;
 import com.example.mediquick.data.model.ScheduleRequest;
 import com.example.mediquick.data.model.ScheduleResponse;
 import com.example.mediquick.services.AppointmentService;

@@ -58,4 +58,35 @@
     <color name="appointment_confirmed">#2196F3</color>
     <color name="appointment_completed">#4CAF50</color>
     <color name="appointment_canceled">#F44336</color>
+
+    <!-- Colores principales -->
+    <color name="primary">#2196F3</color>
+    <color name="accent">#FF4081</color>
+
+    <!-- Colores de fondo -->
+    <color name="background_primary">#FAFAFA</color>
+    <color name="background_secondary">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+
+
+
+    <!-- Colores de estado -->
+    <color name="status_active">#4CAF50</color>
+    <color name="status_inactive">#F44336</color>
+    <color name="status_warning">#FF9800</color>
+
+    <!-- Colores de mensaje -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FF9800</color>
+    <color name="info">#2196F3</color>
+
+    <!-- Colores de elementos UI -->
+    <color name="card_stroke">#E0E0E0</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="overlay_loading">#80FFFFFF</color>
+
+    <!-- Colores transparentes -->
+    <color name="transparent">#00000000</color>
+    <color name="semi_transparent">#80000000</color>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.mediquick.ui.activities;
+package com.example.mediquick.data.model;
 
 public class Doctor {
     private String id;
