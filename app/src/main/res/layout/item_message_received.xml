@@ -1,19 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="start"
-    android:padding="8dp">
+    android:padding="4dp">
 
+    <!-- Avatar del remitente -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/senderAvatar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/messageCard">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_person_placeholder"
+            android:background="@drawable/gradient_avatar_background"
+            android:scaleType="centerCrop"
+            android:contentDescription="Avatar del doctor" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Contenedor del mensaje recibido -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/messageCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="64dp"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/message_received_background"
+        app:layout_constraintStart_toEndOf="@id/senderAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="280dp"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Nombre del remitente (opcional, para chats grupales) -->
+            <TextView
+                android:id="@+id/text_sender_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dr. Juan Pérez"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_marginBottom="2dp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Texto del mensaje -->
+            <TextView
+                android:id="@+id/text_message_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hola, ¿cómo te sientes hoy? Cuéntame sobre tus síntomas"
+                android:textColor="@color/message_received_text"
+                android:textSize="16sp"
+                android:lineSpacingExtra="2dp"
+                android:textIsSelectable="true"
+                tools:ignore="HardcodedText" />
+
+            <!-- Hora del mensaje -->
+            <TextView
+                android:id="@+id/text_message_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14:28"
+                android:textColor="@color/message_time_text"
+                android:textSize="12sp"
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Reacción al mensaje -->
     <TextView
-        android:id="@+id/text_message_body"
+        android:id="@+id/text_reaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_message_received"
-        android:padding="10dp"
-        android:text="Mensaje recibido"
-        android:textColor="#333333"  android:textSize="16sp"
+        android:text="👍"
+        android:textSize="18sp"
+        android:background="@drawable/reaction_background"
+        android:padding="4dp"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/messageCard"
+        app:layout_constraintTop_toBottomOf="@id/messageCard"
         tools:ignore="HardcodedText" />
-</LinearLayout>
-    <!--Moris Navas-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

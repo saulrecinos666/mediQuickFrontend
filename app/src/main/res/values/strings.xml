@@ -4,12 +4,43 @@
     <string name="iniciar_sesion">INICIAR SESION</string>
     <string name="registrarse">REGISTRARSE</string>
 
-    <string name="back">Atrás</string>
-    <string name="chats">Chats</string>
-    <string name="contact_name">Lorem Ipsum</string>
-    <string name="last_seen">Última vez hace poco</string>
-    <string name="contact_photo">Foto del contacto</string>
-    <string name="message_hint">Escribe un mensaje</string>
+
+
+    <!-- Strings básicas -->
+    <string name="back">Volver</string>
     <string name="send">Enviar</string>
 
+    <!-- Chat strings -->
+    <string name="contact_name">Nombre del contacto</string>
+    <string name="contact_photo">Foto del contacto</string>
+    <string name="last_seen">Visto por última vez</string>
+    <string name="message_hint">Escribe un mensaje...</string>
+    <string name="typing_indicator">Escribiendo...</string>
+    <string name="online">En línea</string>
+    <string name="offline">Desconectado</string>
+
+    <!-- Estados de mensaje -->
+    <string name="message_sent">Enviado</string>
+    <string name="message_delivered">Entregado</string>
+    <string name="message_read">Leído</string>
+    <string name="message_pending">Enviando...</string>
+    <string name="message_failed">Error al enviar</string>
+
+    <!-- Acciones -->
+    <string name="attach_file">Adjuntar archivo</string>
+    <string name="take_photo">Tomar foto</string>
+    <string name="choose_photo">Elegir foto</string>
+    <string name="record_audio">Grabar audio</string>
+    <string name="call">Llamar</string>
+    <string name="video_call">Videollamada</string>
+    <string name="more_options">Más opciones</string>
+
+    <!-- Separadores de fecha -->
+    <string name="today">Hoy</string>
+    <string name="yesterday">Ayer</string>
+
+    <!-- Mensajes del sistema -->
+    <string name="connection_lost">Conexión perdida</string>
+    <string name="reconnecting">Reconectando...</string>
+    <string name="connected">Conectado</string>
 </resources>

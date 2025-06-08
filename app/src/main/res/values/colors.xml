@@ -109,5 +109,30 @@
     <color name="laboratory_color">#795548</color>
     <color name="general_color">#607D8B</color>
 
+
+
+    <color name="colorPrimaryDark">#0056CC</color>
+    <color name="colorAccent">#007AFF</color>
+
+    <!-- Colores de mensajes enviados -->
+    <color name="message_sent_background">#DCF8C6</color>
+    <color name="message_sent_text">#1A1A1A</color>
+
+    <!-- Colores de mensajes recibidos -->
+    <color name="message_received_background">#FFFFFF</color>
+    <color name="message_received_text">#1A1A1A</color>
+
+    <!-- Colores de hora y estado -->
+    <color name="message_time_text">#999999</color>
+    <color name="message_status_pending">#FFA726</color>
+    <color name="message_status_sent">#999999</color>
+    <color name="message_status_delivered">#666666</color>
+    <color name="message_status_read">#007AFF</color>
+
+    <!-- Colores adicionales -->
+
     <color name="background_light">#FAFAFA</color>
+
+    <color name="online_status">#4CAF50</color>
+    <color name="offline_status">#999999</color>
 </resources>
