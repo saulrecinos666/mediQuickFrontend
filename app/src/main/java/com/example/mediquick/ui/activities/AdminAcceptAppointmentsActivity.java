@@ -3,6 +3,7 @@ package com.example.mediquick.ui.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,9 @@ public class AdminAcceptAppointmentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_accept_appointments);
+
+        ImageView btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         recyclerAppointments = findViewById(R.id.recyclerAppointments);
         emptyView = findViewById(R.id.emptyView);

@@ -26,6 +26,9 @@ public class AppointmentDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment_detail);
 
+        ImageView btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
+
         txtProcedimiento = findViewById(R.id.txtProcedimiento);
         txtFecha = findViewById(R.id.txtFechaDetalle);
         txtDoctor = findViewById(R.id.txtDoctorDetalle);

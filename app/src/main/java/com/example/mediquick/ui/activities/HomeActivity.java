@@ -78,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
         setupQuickCard(
                 R.id.card2,
                 "Agendar citas",
-                "Agenda las citas de tus pacientes",
+                "Agenda citas de pacientes",
                 R.drawable.chat_round_dots,
                 AdminAcceptAppointmentsActivity.class
         );
@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
         setupQuickCard(
                 R.id.card4,
                 "Crear cita",
-                "crear citas como paciente",
+                "Crear citas como paciente",
                 R.drawable.chat_round_dots,
                 InstitutionListActivity.class
         );
