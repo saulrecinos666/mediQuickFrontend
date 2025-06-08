@@ -104,8 +104,8 @@ public class ProcedureListActivity extends AppCompatActivity {
         tvEmptySubtitle = findViewById(R.id.tvEmptySubtitle);
         btnRetry = findViewById(R.id.btnRetry);
         loadingOverlay = findViewById(R.id.loadingOverlay);
-        chipOnline = findViewById(R.id.chipOnline);
-        chipUrgent = findViewById(R.id.chipUrgent);
+        //chipOnline = findViewById(R.id.chipOnline);
+        //chipUrgent = findViewById(R.id.chipUrgent);
 
         // Configurar información de la sucursal
         String headerText = branchName != null ? branchName : "Sucursal";
