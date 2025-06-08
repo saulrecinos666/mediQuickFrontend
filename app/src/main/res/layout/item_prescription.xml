@@ -1,36 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- item_prescription.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_medication_item"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:elevation="2dp">
 
+    <!-- Nombre del medicamento -->
     <TextView
         android:id="@+id/txtMedicamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="💊 Paracetamol"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="#2E7D32"
+        android:layout_marginBottom="8dp"
+        android:drawablePadding="8dp" />
 
-    <TextView
-        android:id="@+id/txtDosis"
+    <!-- Dosis -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
 
-    <TextView
-        android:id="@+id/txtFrecuencia"
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Dosis:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/txtDosis"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="500mg"
+            android:textSize="14sp"
+            android:textColor="#333333" />
+
+    </LinearLayout>
+
+    <!-- Frecuencia -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
 
-    <TextView
-        android:id="@+id/txtDuracion"
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Frecuencia:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/txtFrecuencia"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cada 8h"
+            android:textSize="14sp"
+            android:textColor="#333333" />
+
+    </LinearLayout>
+
+    <!-- Duración -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
 
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="Duración:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/txtDuracion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="5 días"
+            android:textSize="14sp"
+            android:textColor="#333333" />
+
+    </LinearLayout>
+
+    <!-- Notas -->
     <TextView
         android:id="@+id/txtNotas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Notas: Tomar con agua"
+        android:textSize="12sp"
+        android:textColor="#777777"
+        android:textStyle="italic"
+        android:background="#F8F9FA"
+        android:padding="8dp"
+        android:layout_marginTop="4dp" />
+
 </LinearLayout>

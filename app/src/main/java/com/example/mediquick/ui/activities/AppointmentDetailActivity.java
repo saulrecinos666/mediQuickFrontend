@@ -3,6 +3,7 @@ package com.example.mediquick.ui.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +16,6 @@ import com.example.mediquick.data.api.ApiClient;
 import com.example.mediquick.data.model.GetAppointmentResponse;
 import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.ui.adapters.PrescriptionItemAdapter;
-import com.example.mediquick.data.model.PrescriptionDetail;
 import com.example.mediquick.data.model.PrescriptionItem;
 import com.example.mediquick.utils.SessionManager;
 
@@ -34,10 +34,11 @@ public class AppointmentDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "AppointmentDetail";
 
-    private TextView txtProcedimiento, txtFecha, txtDoctor, txtSucursal, txtNotas, txtSinReceta, txtEstado;
+    private TextView txtProcedimiento, txtFecha, txtDoctor, txtSucursal, txtNotas, txtEstado;
     private RecyclerView recyclerMedicamentos;
     private LinearLayout layoutReceta, loadingContainer;
     private ProgressBar progressBar;
+    private androidx.cardview.widget.CardView cardSinReceta; // ✅ CAMBIO: CardView en lugar de TextView
 
     // API y sesión
     private AppointmentService apiService;
@@ -62,14 +63,17 @@ public class AppointmentDetailActivity extends AppCompatActivity {
         txtDoctor = findViewById(R.id.txtDoctorDetalle);
         txtSucursal = findViewById(R.id.txtSucursalDetalle);
         txtNotas = findViewById(R.id.txtNotasGenerales);
-        txtSinReceta = findViewById(R.id.txtSinReceta);
-        txtEstado = findViewById(R.id.txtEstado); // Agregar al layout si no existe
+        txtEstado = findViewById(R.id.txtEstado);
+
+        // ✅ AGREGAR ESTA LÍNEA:
+        cardSinReceta = findViewById(R.id.txtSinReceta);
+
         recyclerMedicamentos = findViewById(R.id.recyclerMedicamentos);
         layoutReceta = findViewById(R.id.layoutReceta);
 
-        // Loading views (agregar al layout si no existen)
+        // Loading views
         loadingContainer = findViewById(R.id.loading_container);
-        //progressBar = findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
 
         Log.d(TAG, "Views inicializadas correctamente");
     }
@@ -162,6 +166,7 @@ public class AppointmentDetailActivity extends AppCompatActivity {
         }
     }
 
+    // En el método updateUIWithAppointmentDetails(), también agrega el manejo del cardSinReceta:
     private void updateUIWithAppointmentDetails(GetAppointmentResponse.AppointmentDetailData appointmentData) {
         Log.d(TAG, "=== ACTUALIZANDO UI CON DETALLES ===");
 
@@ -173,7 +178,9 @@ public class AppointmentDetailActivity extends AppCompatActivity {
 
         // Estado de la cita
         if (txtEstado != null && appointmentData.getMedicalAppointmentState() != null) {
-            txtEstado.setText(appointmentData.getMedicalAppointmentState().getMedicalAppointmentStateDescription());
+            String estado = appointmentData.getMedicalAppointmentState().getMedicalAppointmentStateDescription();
+            txtEstado.setText(estado);
+            setStatusBadgeStyle(estado);
         }
 
         // Manejar prescripciones
@@ -187,27 +194,54 @@ public class AppointmentDetailActivity extends AppCompatActivity {
             Log.d(TAG, "Cita tiene " + appointmentData.getTotalPrescriptions() + " prescripciones");
 
             layoutReceta.setVisibility(View.VISIBLE);
-            txtSinReceta.setVisibility(View.GONE);
+            if (cardSinReceta != null) {
+                cardSinReceta.setVisibility(View.GONE);
+            }
 
-            // Obtener la primera prescripción (o combinar múltiples si es necesario)
-            GetAppointmentResponse.PrescriptionDetail firstPrescription = appointmentData.getPrescription().get(0);
+            // ✅ CAMBIO: Procesar TODAS las prescripciones, no solo la primera
+            List<PrescriptionItem> allMedicamentos = new ArrayList<>();
+            StringBuilder allNotes = new StringBuilder();
 
-            // Mostrar notas de la prescripción
-            if (firstPrescription.getPrescriptionNotes() != null && !firstPrescription.getPrescriptionNotes().isEmpty()) {
-                txtNotas.setText(firstPrescription.getPrescriptionNotes());
+            // Iterar por todas las prescripciones
+            for (int i = 0; i < appointmentData.getPrescription().size(); i++) {
+                GetAppointmentResponse.PrescriptionDetail prescription = appointmentData.getPrescription().get(i);
+
+                Log.d(TAG, "Procesando prescripción " + (i + 1) + " de " + appointmentData.getPrescription().size());
+
+                // Agregar notas de esta prescripción
+                if (prescription.getPrescriptionNotes() != null && !prescription.getPrescriptionNotes().isEmpty()) {
+                    if (allNotes.length() > 0) {
+                        allNotes.append("\n\n"); // Separador entre prescripciones
+                    }
+                    allNotes.append("Prescripción ").append(i + 1).append(": ").append(prescription.getPrescriptionNotes());
+                }
+
+                // Agregar todos los medicamentos de esta prescripción
+                List<PrescriptionItem> medicamentosDeEstaPrescripcion = convertPrescriptionItems(prescription);
+                allMedicamentos.addAll(medicamentosDeEstaPrescripcion);
+            }
+
+            // Mostrar todas las notas combinadas
+            if (allNotes.length() > 0) {
+                txtNotas.setText(allNotes.toString());
             } else {
                 txtNotas.setText("Sin notas adicionales");
             }
 
-            // Configurar RecyclerView con medicamentos
-            List<PrescriptionItem> medicamentos = convertPrescriptionItems(firstPrescription);
+            // Configurar RecyclerView con TODOS los medicamentos
             recyclerMedicamentos.setLayoutManager(new LinearLayoutManager(this));
-            recyclerMedicamentos.setAdapter(new PrescriptionItemAdapter(medicamentos));
+            recyclerMedicamentos.setAdapter(new PrescriptionItemAdapter(allMedicamentos));
+
+            fixRecyclerViewHeight(recyclerMedicamentos);
+
+            Log.d(TAG, "Total de medicamentos mostrados: " + allMedicamentos.size());
 
         } else {
             Log.d(TAG, "Cita sin prescripciones");
             layoutReceta.setVisibility(View.GONE);
-            txtSinReceta.setVisibility(View.VISIBLE);
+            if (cardSinReceta != null) {
+                cardSinReceta.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -297,60 +331,51 @@ public class AppointmentDetailActivity extends AppCompatActivity {
     private void loadFallbackData() {
         Log.d(TAG, "=== CARGANDO DATOS DE FALLBACK ===");
 
-        PrescriptionDetail receta;
+        // ✅ CREAR directamente la lista de PrescriptionItem (para el adapter)
+        List<PrescriptionItem> fallbackItems = new ArrayList<>();
+        String fallbackNotes = "";
 
         if ("sim-1".equals(appointmentId) || "1".equals(appointmentId)) {
-            receta = new PrescriptionDetail(
-                    appointmentId,
-                    "Consulta General",
-                    "06/Jun/2025 - 12:45 PM",
-                    "Dr. Roberto Martínez Hernández",
-                    "Clínica Central San Salvador",
-                    "Tomar con alimentos",
-                    Arrays.asList(
-                            new PrescriptionItem("Paracetamol", "500mg", "Cada 8h", "5 días", "Tomar con agua")
-                    )
-            );
+            fallbackItems.add(new PrescriptionItem("Paracetamol", "500mg", "Cada 8h", "5 días", "Tomar con agua"));
+            fallbackNotes = "Tomar con alimentos";
+
+            txtProcedimiento.setText("Consulta General");
+            txtFecha.setText("06/Jun/2025 - 12:45 PM");
+            txtDoctor.setText("Dr. Roberto Martínez Hernández");
+            txtSucursal.setText("Clínica Central San Salvador");
+
         } else if ("sim-2".equals(appointmentId) || "2".equals(appointmentId)) {
-            receta = new PrescriptionDetail(
-                    appointmentId,
-                    "Pediatría",
-                    "01/Jun/2025 - 08:30 AM",
-                    "Dr. Ana López",
-                    "Clínica Norte Soyapango",
-                    "Control de fiebre",
-                    Arrays.asList(
-                            new PrescriptionItem("Amoxicilina", "250mg", "Cada 8h", "7 días", "")
-                    )
-            );
+            fallbackItems.add(new PrescriptionItem("Amoxicilina", "250mg", "Cada 8h", "7 días", ""));
+            fallbackNotes = "Control de fiebre";
+
+            txtProcedimiento.setText("Pediatría");
+            txtFecha.setText("01/Jun/2025 - 08:30 AM");
+            txtDoctor.setText("Dr. Ana López");
+            txtSucursal.setText("Clínica Norte Soyapango");
+
         } else {
-            receta = new PrescriptionDetail(
-                    appointmentId,
-                    "Sin detalles",
-                    "Fecha no disponible",
-                    "Sin doctor asignado",
-                    "Sucursal no especificada",
-                    "Sin receta médica",
-                    Arrays.asList()
-            );
+            txtProcedimiento.setText("Sin detalles");
+            txtFecha.setText("Fecha no disponible");
+            txtDoctor.setText("Sin doctor asignado");
+            txtSucursal.setText("Sucursal no especificada");
+            fallbackNotes = "Sin receta médica";
         }
 
-        // Actualizar UI con datos simulados
-        txtProcedimiento.setText(receta.getProcedure());
-        txtFecha.setText(receta.getDateTime());
-        txtDoctor.setText(receta.getDoctor());
-        txtSucursal.setText(receta.getBranch());
-
-        if (receta.getItems().isEmpty()) {
+        // ✅ ACTUALIZAR UI con datos simulados
+        if (fallbackItems.isEmpty()) {
             layoutReceta.setVisibility(View.GONE);
-            txtSinReceta.setVisibility(View.VISIBLE);
+            if (cardSinReceta != null) {
+                cardSinReceta.setVisibility(View.VISIBLE);
+            }
         } else {
             layoutReceta.setVisibility(View.VISIBLE);
-            txtSinReceta.setVisibility(View.GONE);
-            txtNotas.setText(receta.getPrescriptionNotes());
+            if (cardSinReceta != null) {
+                cardSinReceta.setVisibility(View.GONE);
+            }
+            txtNotas.setText(fallbackNotes);
 
             recyclerMedicamentos.setLayoutManager(new LinearLayoutManager(this));
-            recyclerMedicamentos.setAdapter(new PrescriptionItemAdapter(receta.getItems()));
+            recyclerMedicamentos.setAdapter(new PrescriptionItemAdapter(fallbackItems));
         }
 
         Toast.makeText(this, "Mostrando datos de ejemplo", Toast.LENGTH_SHORT).show();
@@ -373,9 +398,73 @@ public class AppointmentDetailActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * ✅ NUEVO: Establece el estilo del badge según el estado
+     */
+    private void setStatusBadgeStyle(String estado) {
+        if (txtEstado == null) return;
+
+        int backgroundRes;
+        switch (estado.toLowerCase()) {
+            case "created":
+                backgroundRes = R.drawable.bg_status_created; // Naranja
+                break;
+            case "scheduled":
+                backgroundRes = R.drawable.bg_status_scheduled; // Azul
+                break;
+            case "completed":
+                backgroundRes = R.drawable.bg_status_completed; // Verde
+                break;
+            case "cancelled":
+            case "canceled":
+                backgroundRes = R.drawable.bg_status_cancelled; // Rojo
+                break;
+            default:
+                backgroundRes = R.drawable.bg_status_badge; // Verde por defecto
+                break;
+        }
+
+        txtEstado.setBackgroundResource(backgroundRes);
+        Log.d(TAG, "Badge actualizado para estado: " + estado);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "AppointmentDetailActivity destruida");
     }
+
+// Agrega este método a tu AppointmentDetailActivity:
+
+    private void fixRecyclerViewHeight(RecyclerView recyclerView) {
+        // Forzar que el RecyclerView calcule correctamente su altura
+        recyclerView.post(() -> {
+            recyclerView.getLayoutManager().onLayoutCompleted(null);
+
+            // Calcular altura total de todos los items
+            int totalHeight = 0;
+            RecyclerView.Adapter adapter = recyclerView.getAdapter();
+            if (adapter != null) {
+                for (int i = 0; i < adapter.getItemCount(); i++) {
+                    View item = recyclerView.getLayoutManager().findViewByPosition(i);
+                    if (item != null) {
+                        item.measure(
+                                View.MeasureSpec.makeMeasureSpec(recyclerView.getWidth(), View.MeasureSpec.EXACTLY),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        );
+                        totalHeight += item.getMeasuredHeight();
+                    }
+                }
+
+                // Establecer altura mínima
+                ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
+                params.height = Math.max(totalHeight, 200); // Mínimo 200dp
+                recyclerView.setLayoutParams(params);
+
+                Log.d(TAG, "RecyclerView height fijada a: " + totalHeight + "px");
+            }
+        });
+    }
+
+
 }
