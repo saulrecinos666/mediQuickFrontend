@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +19,9 @@ import com.example.mediquick.data.model.Branch;
 import com.example.mediquick.data.model.GetAllBranchesByInstitutionResponse;
 import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.ui.adapters.BranchAdapter;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,19 @@ public class BranchListActivity extends AppCompatActivity {
 
     private static final String TAG = "BranchList";
 
+    // Views
+    private MaterialToolbar toolbar;
     private RecyclerView recyclerView;
-    private TextView txtHeader, emptyState;
-    private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ImageView btnBackToInstitutions;
+    private TextView txtNombreInstitucion;
+    private TextView tvBranchCount;
+    private View emptyStateLayout;
+    private TextView tvEmptyTitle;
+    private TextView tvEmptySubtitle;
+    private MaterialButton btnRetry;
+    private View loadingOverlay;
+
+    // Data & Adapter
     private List<Branch> branches = new ArrayList<>();
     private BranchAdapter adapter;
 
@@ -54,12 +63,13 @@ public class BranchListActivity extends AppCompatActivity {
 
         receiveIntentData();
         initViews();
-        setupClickListeners();
+        setupToolbar();
         setupApiService();
         setupRecyclerView();
         setupSwipeRefresh();
+        setupEmptyState();
 
-        cargarSucursales();
+        loadBranches();
     }
 
     private void receiveIntentData() {
@@ -78,62 +88,77 @@ public class BranchListActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recyclerSucursales);
-        txtHeader = findViewById(R.id.txtNombreInstitucion);
-        emptyState = findViewById(R.id.emptyViewSucursales);
-        progressBar = findViewById(R.id.progressBarSucursales);
-        btnBackToInstitutions = findViewById(R.id.btnBackToInstitutions);
-        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Agregar al layout si no existe
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        txtNombreInstitucion = findViewById(R.id.txtNombreInstitucion);
+        tvBranchCount = findViewById(R.id.tvBranchCount);
+        emptyStateLayout = findViewById(R.id.emptyStateLayout);
+        tvEmptyTitle = findViewById(R.id.tvEmptyTitle);
+        tvEmptySubtitle = findViewById(R.id.tvEmptySubtitle);
+        btnRetry = findViewById(R.id.btnRetry);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
 
-        // Configurar header
+        // Configurar información de la institución
         String headerText = institutionName != null ? institutionName : "Institución";
-        txtHeader.setText(headerText);
+        txtNombreInstitucion.setText(headerText);
 
         Log.d(TAG, "Views inicializadas. Header: " + headerText);
     }
 
-    private void setupClickListeners() {
-        // ✅ CONFIGURAR EL BOTÓN DE RETROCESO
-        btnBackToInstitutions.setOnClickListener(v -> {
-            Log.d(TAG, "Back button presionado - volviendo a instituciones");
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        toolbar.setNavigationOnClickListener(v -> {
+            Log.d(TAG, "Navigation back pressed");
             onBackPressed();
         });
     }
 
     private void setupApiService() {
-        apiService = ApiClient.getUnauthenticatedClient(BuildConfig.BACKEND_BASE_URL).create(AppointmentService.class);
-
+        apiService = ApiClient.getUnauthenticatedClient(BuildConfig.BACKEND_BASE_URL)
+                .create(AppointmentService.class);
         Log.d(TAG, "API Service configurado con base URL: " + BuildConfig.BACKEND_BASE_URL);
     }
 
     private void setupRecyclerView() {
-        adapter = new BranchAdapter(branches, selected -> {
-            Log.d(TAG, "Sucursal seleccionada: " + selected.getBranchName());
-            Intent intent = new Intent(this, ProcedureListActivity.class);
-            intent.putExtra("branchId", selected.getBranchId());
-            intent.putExtra("branchName", selected.getBranchName());
-            startActivity(intent);
-        });
+        adapter = new BranchAdapter(branches, this::onBranchSelected);
 
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
 
         Log.d(TAG, "RecyclerView configurado");
     }
 
     private void setupSwipeRefresh() {
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setOnRefreshListener(() -> {
-                Log.d(TAG, "Pull to refresh activado");
-                cargarSucursales();
-            });
-        }
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.primary,
+                R.color.primary_dark,
+                R.color.accent
+        );
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            Log.d(TAG, "Pull to refresh activado");
+            loadBranches();
+        });
     }
 
-    private void cargarSucursales() {
+    private void setupEmptyState() {
+        btnRetry.setOnClickListener(v -> {
+            Log.d(TAG, "Retry button pressed");
+            loadBranches();
+        });
+    }
+
+    private void loadBranches() {
         if (institutionId == null || institutionId.isEmpty()) {
             Log.e(TAG, "No se puede cargar sucursales: institutionId es null o vacío");
-            showError("Error: ID de institución no válido");
+            showErrorMessage("Error", "ID de institución no válido");
             return;
         }
 
@@ -141,11 +166,13 @@ public class BranchListActivity extends AppCompatActivity {
         Log.d(TAG, "Institution ID: " + institutionId);
 
         showLoading(true);
+        hideEmptyState();
 
         apiService.getAllBranchesByInstitution(institutionId)
                 .enqueue(new Callback<GetAllBranchesByInstitutionResponse>() {
                     @Override
-                    public void onResponse(Call<GetAllBranchesByInstitutionResponse> call, Response<GetAllBranchesByInstitutionResponse> response) {
+                    public void onResponse(Call<GetAllBranchesByInstitutionResponse> call,
+                                           Response<GetAllBranchesByInstitutionResponse> response) {
                         showLoading(false);
                         handleBranchesResponse(response);
                     }
@@ -161,23 +188,22 @@ public class BranchListActivity extends AppCompatActivity {
     private void handleBranchesResponse(Response<GetAllBranchesByInstitutionResponse> response) {
         Log.d(TAG, "=== RESPUESTA DE SUCURSALES RECIBIDA ===");
         Log.d(TAG, "Response Code: " + response.code());
-        Log.d(TAG, "Request URL: " + response.raw().request().url().toString());
 
         if (response.isSuccessful() && response.body() != null) {
             GetAllBranchesByInstitutionResponse apiResponse = response.body();
             Log.d(TAG, "API Success: " + apiResponse.isSuccess());
-            Log.d(TAG, "Message: " + apiResponse.getMessage());
-            Log.d(TAG, "Total sucursales recibidas: " + apiResponse.getTotalBranches());
+            Log.d(TAG, "Total sucursales: " + apiResponse.getTotalBranches());
 
             if (apiResponse.isSuccess() && apiResponse.hasBranches()) {
                 updateBranchesList(apiResponse.getData());
-                Toast.makeText(this, "Sucursales cargadas: " + apiResponse.getTotalBranches(), Toast.LENGTH_SHORT).show();
+                showSuccessMessage("Sucursales cargadas: " + apiResponse.getTotalBranches());
             } else {
-                Log.w(TAG, "❌ No hay sucursales disponibles para esta institución");
-                showEmptyState("No hay sucursales disponibles para esta institución");
+                Log.w(TAG, "No hay sucursales disponibles");
+                showEmptyState("No hay sucursales disponibles",
+                        "Esta institución no tiene sucursales activas en este momento");
             }
         } else {
-            Log.e(TAG, "❌ Error HTTP: " + response.code());
+            Log.e(TAG, "Error HTTP: " + response.code());
             handleHttpError(response);
         }
     }
@@ -193,150 +219,160 @@ public class BranchListActivity extends AppCompatActivity {
                 Branch branch = convertToBranch(branchData);
                 branches.add(branch);
 
-                Log.d(TAG, "Sucursal agregada: " + branch.getBranchName() );
+                Log.d(TAG, "Sucursal agregada: " + branch.getBranchName());
                 Log.d(TAG, "  Dirección: " + branch.getBranchFullAddress());
                 Log.d(TAG, "  Descripción: " + branch.getBranchDescription());
-                Log.d(TAG, "  Institución: " + branchData.getInstitutionDisplayName());
             } else {
                 Log.d(TAG, "Sucursal inactiva omitida: " + branchData.getBranchName());
             }
         }
 
-        Log.i(TAG, "✅ Lista actualizada con " + branches.size() + " sucursales activas");
+        Log.i(TAG, "Lista actualizada con " + branches.size() + " sucursales activas");
 
         adapter.notifyDataSetChanged();
-        updateEmptyState();
+        updateBranchCount();
     }
 
     private Branch convertToBranch(GetAllBranchesByInstitutionResponse.BranchData branchData) {
         Branch branch = new Branch();
-
         branch.setBranchId(branchData.getBranchId());
         branch.setBranchName(branchData.getBranchName());
-        // branch.setBranchAcronym(branchData.getBranchAcronym());
         branch.setBranchDescription(branchData.getBranchDescription());
         branch.setBranchFullAddress(branchData.getBranchFullAddress());
-        // branch.setBranchStatus(branchData.isBranchStatus());
-        //branch.setInstitutionId(branchData.getInstitutionId());
-
-        // Coordenadas (pueden ser null)
-//        if (branchData.hasCoordinates()) {
-//            branch.setBranchLatitude(branchData.getBranchLatitude());
-//            branch.setBranchLongitude(branchData.getBranchLongitude());
-//            Log.d(TAG, "  Coordenadas: " + branchData.getBranchLatitude() + ", " + branchData.getBranchLongitude());
-//        } else {
-//            Log.d(TAG, "  Sin coordenadas GPS");
-//        }
 
         Log.d(TAG, "Convertida sucursal: " + branchData.getDisplayName());
-
         return branch;
     }
 
     private void handleApiError(Throwable t) {
         Log.e(TAG, "=== ERROR AL CARGAR SUCURSALES ===");
-        Log.e(TAG, "Error Type: " + t.getClass().getSimpleName());
-        Log.e(TAG, "Error Message: " + t.getMessage());
+        Log.e(TAG, "Error: " + t.getMessage());
         t.printStackTrace();
 
-        Toast.makeText(this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
-
-        // Cargar datos simulados como fallback
-        cargarSucursalesSimuladas();
+        showErrorMessage("Error de conexión", "Revisa tu conexión a internet");
+        loadSimulatedBranches(); // Fallback
     }
 
     private void handleHttpError(Response<GetAllBranchesByInstitutionResponse> response) {
         try {
-            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Sin detalles";
+            String errorBody = response.errorBody() != null ?
+                    response.errorBody().string() : "Sin detalles";
             Log.e(TAG, "Error Body: " + errorBody);
-            Toast.makeText(this, "Error HTTP " + response.code() + ": " + errorBody, Toast.LENGTH_LONG).show();
+
+            showErrorMessage("Error del servidor",
+                    "Código: " + response.code() + " - Intenta más tarde");
         } catch (Exception e) {
             Log.e(TAG, "Error leyendo error body", e);
-            Toast.makeText(this, "Error HTTP " + response.code(), Toast.LENGTH_SHORT).show();
+            showErrorMessage("Error del servidor", "Código: " + response.code());
         }
 
-        // Cargar datos simulados como fallback
-        cargarSucursalesSimuladas();
+        loadSimulatedBranches(); // Fallback
     }
 
-    private void cargarSucursalesSimuladas() {
+    private void loadSimulatedBranches() {
         Log.d(TAG, "=== CARGANDO SUCURSALES SIMULADAS (FALLBACK) ===");
 
         branches.clear();
 
-        Branch branch1 = new Branch();
-        branch1.setBranchId("sim-1");
-        branch1.setBranchName("Sucursal Centro");
-        //branch1.setBranchAcronym("SC");
-        branch1.setBranchFullAddress("Av. Central #123");
-        branch1.setBranchDescription("Sucursal principal en zona centro");
-        //branch1.setBranchStatus(true);
-        //branch1.setInstitutionId(institutionId);
-        branches.add(branch1);
+        // Datos de ejemplo mejorados
+        branches.add(createSimulatedBranch(
+                "sim-1",
+                "Sucursal Centro",
+                "Av. Central #123, Col. Centro",
+                "Sucursal principal con atención las 24 horas del día"
+        ));
 
-        Branch branch2 = new Branch();
-        branch2.setBranchId("sim-2");
-        branch2.setBranchName("Sucursal Norte");
-        //branch2.setBranchAcronym("SN");
-        branch2.setBranchFullAddress("Col. La Esperanza, Calle Ficticia");
-        branch2.setBranchDescription("Atención general y odontológica");
-        // branch2.setBranchStatus(true);
-        // branch2.setInstitutionId(institutionId);
-        branches.add(branch2);
+        branches.add(createSimulatedBranch(
+                "sim-2",
+                "Sucursal Norte",
+                "Col. La Esperanza, Calle Ficticia #456",
+                "Atención general y especialidades médicas"
+        ));
 
-        Log.i(TAG, "✅ Datos simulados cargados: " + branches.size() + " sucursales");
+        branches.add(createSimulatedBranch(
+                "sim-3",
+                "Sucursal Urgencias",
+                "Av. Emergencias #789, Col. Salud",
+                "Centro de urgencias y emergencias médicas"
+        ));
+
+        Log.i(TAG, "Datos simulados cargados: " + branches.size() + " sucursales");
 
         adapter.notifyDataSetChanged();
-        updateEmptyState();
+        updateBranchCount();
+        showInfoMessage("Datos de ejemplo cargados");
+    }
 
-        Toast.makeText(this, "Cargando datos de ejemplo", Toast.LENGTH_SHORT).show();
+    private Branch createSimulatedBranch(String id, String name, String address, String description) {
+        Branch branch = new Branch();
+        branch.setBranchId(id);
+        branch.setBranchName(name);
+        branch.setBranchFullAddress(address);
+        branch.setBranchDescription(description);
+        return branch;
+    }
+
+    private void updateBranchCount() {
+        int count = branches.size();
+        String text = count == 1 ?
+                count + " sucursal encontrada" :
+                count + " sucursales encontradas";
+        tvBranchCount.setText(text);
+    }
+
+    private void onBranchSelected(Branch branch) {
+        Log.d(TAG, "Sucursal seleccionada: " + branch.getBranchName());
+
+        Intent intent = new Intent(this, ProcedureListActivity.class);
+        intent.putExtra("branchId", branch.getBranchId());
+        intent.putExtra("branchName", branch.getBranchName());
+        intent.putExtra("institutionName", institutionName);
+        startActivity(intent);
     }
 
     private void showLoading(boolean show) {
-        if (progressBar != null) {
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(show);
-        }
-
-        if (show) {
-            emptyState.setVisibility(View.GONE);
-        }
+        loadingOverlay.setVisibility(show ? View.VISIBLE : View.GONE);
+        swipeRefreshLayout.setRefreshing(false); // Siempre ocultar el refresh
 
         Log.d(TAG, "Loading state: " + (show ? "VISIBLE" : "GONE"));
     }
 
-    private void updateEmptyState() {
-        boolean isEmpty = branches.isEmpty();
-        emptyState.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+    private void showEmptyState(String title, String subtitle) {
+        tvEmptyTitle.setText(title);
+        tvEmptySubtitle.setText(subtitle);
+        emptyStateLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
 
-        Log.d(TAG, "Empty state: " + (isEmpty ? "VISIBLE" : "GONE"));
+        Log.d(TAG, "Mostrando empty state: " + title);
     }
 
-    private void showEmptyState(String message) {
-        branches.clear();
-        adapter.notifyDataSetChanged();
-
-        if (emptyState instanceof TextView) {
-            ((TextView) emptyState).setText(message);
-        }
-
-        updateEmptyState();
-        Log.d(TAG, "Mostrando empty state: " + message);
+    private void hideEmptyState() {
+        emptyStateLayout.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showError(String message) {
-        Log.e(TAG, "Mostrando error: " + message);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        updateEmptyState();
+    private void showSuccessMessage(String message) {
+        Snackbar.make(recyclerView, message, Snackbar.LENGTH_SHORT)
+                .setBackgroundTint(getResources().getColor(R.color.success))
+                .show();
+    }
+
+    private void showErrorMessage(String title, String message) {
+        Snackbar.make(recyclerView, title + ": " + message, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.error))
+                .setAction("Reintentar", v -> loadBranches())
+                .show();
+    }
+
+    private void showInfoMessage(String message) {
+        Snackbar.make(recyclerView, message, Snackbar.LENGTH_SHORT)
+                .setBackgroundTint(getResources().getColor(R.color.info))
+                .show();
     }
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "Back button presionado - volviendo a la pantalla de instituciones");
+        Log.d(TAG, "Back button presionado - volviendo a instituciones");
         super.onBackPressed();
     }
 
@@ -344,12 +380,17 @@ public class BranchListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Opcional: recargar sucursales al volver a la actividad
-        // cargarSucursales();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "BranchListActivity destruida");
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
