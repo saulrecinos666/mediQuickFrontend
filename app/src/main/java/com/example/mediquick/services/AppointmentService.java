@@ -6,6 +6,7 @@ import com.example.mediquick.data.model.CreateAppointmentRequest;
 import com.example.mediquick.data.model.CreateAppointmentResponse;
 import com.example.mediquick.data.model.GetAllBranchesByInstitutionResponse;
 import com.example.mediquick.data.model.GetAllInstitutionsResponse;
+import com.example.mediquick.data.model.GetAllMyAppointments;
 import com.example.mediquick.data.model.GetAllProceduresByBranchIdResponse;
 import com.example.mediquick.data.model.GetAppointmentResponse;
 import com.example.mediquick.data.model.GetAssignedAppointmentsResponse;
@@ -64,4 +65,8 @@ public interface AppointmentService {
             @Part("branchId") RequestBody branchId,
             @Part("medicalProcedureId") RequestBody medicalProcedureId
     );
+
+    @GET("api/appointments/filter")
+    Call<GetAllMyAppointments> getAllMyAppointments(@Query("userId") String userId);
+
 }

@@ -88,178 +88,201 @@
                     tools:text="Home" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <!-- Saludo -->
-            <TextView
-                android:id="@+id/greeting_title"
+            <LinearLayout
+                android:id="@+id/loading_container"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:accessibilityLiveRegion="polite"
-                android:importantForAccessibility="yes"
-                android:text="Hi, Sergio!"
-                android:textColor="@color/colorPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/top_bar" />
+                app:layout_constraintTop_toBottomOf="@id/top_bar">
 
-            <TextView
-                android:id="@+id/greeting_subtitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="20dp"
-                android:text="Good morning"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/greeting_title" />
+                <ProgressBar
+                    android:id="@+id/loading_progress"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:indeterminateTint="@color/colorPrimary" />
 
-
-            <!-- Welcome Card -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/welcome_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/bg_card_rounded"
-                android:paddingStart="20dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="20dp"
-                android:paddingBottom="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/greeting_subtitle">
-
-                <LinearLayout
-                    android:id="@+id/welcome_text_container"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/loading_text"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/welcome_image"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:layout_marginTop="16dp"
+                    android:text="Loading content..."
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/welcome_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Welcome!"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/welcome_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Let's schedule your projects"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/welcome_image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="12dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/hospital_building_amico"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/welcome_text_container"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.35" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <!-- Accesos Rápidos -->
-            <TextView
-                android:id="@+id/greeting_title2"
+            <!-- ✅ MAIN CONTENT (initially hidden) -->
+            <LinearLayout
+                android:id="@+id/main_content"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:lineSpacingExtra="2dp"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:text="Accesos rápidos"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/welcome_card" />
+                app:layout_constraintTop_toBottomOf="@id/top_bar">
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/quick_card_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/greeting_title2">
-
-                <!-- Tarjetas incluidas -->
-                <include
-                    android:id="@+id/card1"
-                    layout="@layout/quick_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    android:id="@+id/card2"
-                    layout="@layout/quick_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    android:id="@+id/card3"
-                    layout="@layout/quick_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    android:id="@+id/card4"
-                    layout="@layout/quick_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    android:id="@+id/card5"
-                    layout="@layout/quick_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <!-- Flow para organizar las tarjetas -->
-                <androidx.constraintlayout.helper.widget.Flow
-                    android:id="@+id/flow"
-                    android:layout_width="0dp"
+                <!-- Saludo -->
+                <TextView
+                    android:id="@+id/greeting_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="card1,card2,card3,card4,card5"
-                    app:flow_horizontalGap="12dp"
-                    app:flow_verticalGap="12dp"
-                    app:flow_wrapMode="aligned"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="20dp"
+                    android:accessibilityLiveRegion="polite"
+                    android:importantForAccessibility="yes"
+                    android:text="Hi, Usuario!"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/greeting_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Good morning"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
 
+                <!-- Welcome Card -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/welcome_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/bg_card_rounded"
+                    android:paddingStart="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/welcome_text_container"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/welcome_image"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/welcome_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Welcome!"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/welcome_subtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Let's schedule your medical appointments"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/welcome_image"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="12dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/hospital_building_amico"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/welcome_text_container"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.35" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Accesos Rápidos -->
+                <TextView
+                    android:id="@+id/greeting_title2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:text="Accesos rápidos"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/quick_card_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="20dp">
+
+                    <!-- Tarjetas incluidas -->
+                    <include
+                        android:id="@+id/card1"
+                        layout="@layout/quick_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        android:id="@+id/card2"
+                        layout="@layout/quick_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        android:id="@+id/card3"
+                        layout="@layout/quick_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        android:id="@+id/card4"
+                        layout="@layout/quick_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        android:id="@+id/card5"
+                        layout="@layout/quick_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <!-- Flow para organizar las tarjetas -->
+                    <androidx.constraintlayout.helper.widget.Flow
+                        android:id="@+id/flow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="card1,card2,card3,card4,card5"
+                        app:flow_horizontalGap="12dp"
+                        app:flow_verticalGap="12dp"
+                        app:flow_wrapMode="aligned"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -274,6 +297,5 @@
         android:background="#FFFFFF"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_drawer" />
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
