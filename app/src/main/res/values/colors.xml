@@ -89,4 +89,25 @@
     <!-- Colores transparentes -->
     <color name="transparent">#00000000</color>
     <color name="semi_transparent">#80000000</color>
+
+
+
+
+
+    <!-- Colores específicos para procedimientos -->
+    <color name="online_background">#E3F2FD</color>
+    <color name="online_text">#1976D2</color>
+    <color name="urgent_background">#FFEBEE</color>
+    <color name="urgent_text">#D32F2F</color>
+    <color name="price_color">#4CAF50</color>
+
+    <!-- Colores de especialidades médicas -->
+    <color name="cardiology_color">#E91E63</color>
+    <color name="radiology_color">#9C27B0</color>
+    <color name="dental_color">#00BCD4</color>
+    <color name="ophthalmology_color">#FF9800</color>
+    <color name="laboratory_color">#795548</color>
+    <color name="general_color">#607D8B</color>
+
+
 </resources>

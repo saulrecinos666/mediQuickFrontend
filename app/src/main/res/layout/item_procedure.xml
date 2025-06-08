@@ -1,47 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginBottom="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="6dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true"
+    app:strokeWidth="0.5dp"
+    app:strokeColor="#E0E0E0">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/txtNombreProcedimiento"
-            android:text="Procedimiento"
-            android:textStyle="bold"
-            android:textSize="16sp"
+        <!-- Icono del procedimiento -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/iconContainer"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#E8F5E8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivProcedureIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_medical_procedure"
+                android:contentDescription="Icono procedimiento"
+                app:tint="#4CAF50" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Contenido principal -->
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@id/priceContainer"
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
+            app:layout_constraintTop_toTopOf="@id/iconContainer">
+
+            <TextView
+                android:id="@+id/txtNombreProcedimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="1dp"
+                tools:text="Consulta de Cardiología" />
+
+            <TextView
+                android:id="@+id/txtEspecialidadProcedimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#2196F3"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@drawable/ic_specialty"
+                app:drawableTint="#2196F3"
+                tools:text="Cardiología" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/txtDuracionProcedimiento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#757575"
+                    android:textSize="12sp"
+                    android:drawablePadding="4dp"
+                    app:drawableStartCompat="@drawable/ic_clock"
+                    app:drawableTint="#757575"
+                    tools:text="45 minutos" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipOnlineStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Online"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="#E3F2FD"
+                    app:chipCornerRadius="8dp"
+                    app:chipMinHeight="20dp"
+                    app:chipStartPadding="6dp"
+                    app:chipEndPadding="6dp"
+                    app:chipIcon="@drawable/ic_online"
+                    app:chipIconSize="12dp"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Precio y acción -->
+        <LinearLayout
+            android:id="@+id/priceContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
+            android:gravity="center_vertical|end"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iconContainer"
+            app:layout_constraintBottom_toBottomOf="@id/iconContainer">
 
-        <TextView
-            android:id="@+id/txtDuracionProcedimiento"
-            android:text="Duración"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/txtCostoProcedimiento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="#4CAF50"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="end"
+                tools:text="$150.00" />
 
-        <TextView
-            android:id="@+id/txtCostoProcedimiento"
-            android:text="Costo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_forward"
+                android:contentDescription="Agendar cita"
+                app:tint="#757575" />
 
-        <TextView
-            android:id="@+id/txtEspecialidadProcedimiento"
-            android:text="Especialidad"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <!-- Badges adicionales -->
+        <LinearLayout
+            android:id="@+id/badgesLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/contentLayout"
+            app:layout_constraintTop_toBottomOf="@id/contentLayout">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAvailableSlots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="3 slots disponibles"
+                android:textSize="10sp"
+                app:chipBackgroundColor="#FFF3E0"
+                app:chipCornerRadius="8dp"
+                app:chipMinHeight="20dp"
+                app:chipStartPadding="6dp"
+                app:chipEndPadding="6dp"
+                tools:visibility="visible" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipRequiresConfirmation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Requiere confirmación"
+                android:textSize="10sp"
+                android:visibility="gone"
+                app:chipBackgroundColor="#FFEBEE"
+                app:chipCornerRadius="8dp"
+                app:chipMinHeight="20dp"
+                app:chipStartPadding="6dp"
+                app:chipEndPadding="6dp"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
