@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema personalizado para DatePicker -->
+    <style name="CustomDatePickerTheme" parent="Theme.Material3.DayNight.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="android:datePickerStyle">@style/CustomDatePickerStyle</item>
+    </style>
+
+    <style name="CustomDatePickerStyle" parent="android:Widget.Material.DatePicker">
+        <item name="android:headerBackground">@color/colorPrimary</item>
+        <item name="android:numbersTextColor">@color/text_primary</item>
+        <item name="android:numbersInnerTextColor">@android:color/white</item>
+        <item name="android:numbersSelectorColor">@color/colorPrimary</item>
+    </style>
+
+    <!-- Tema personalizado para TimePicker -->
+    <style name="CustomTimePickerTheme" parent="Theme.Material3.DayNight.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="android:timePickerStyle">@style/CustomTimePickerStyle</item>
+    </style>
+
+    <style name="CustomTimePickerStyle" parent="android:Widget.Material.TimePicker">
+        <item name="android:headerBackground">@color/colorPrimary</item>
+        <item name="android:numbersTextColor">@color/text_primary</item>
+        <item name="android:numbersInnerTextColor">@android:color/white</item>
+        <item name="android:numbersSelectorColor">@color/colorPrimary</item>
+    </style>
+
+    <!-- Estilo para inputs del dialog -->
+    <style name="DialogInputStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="hintTextColor">@color/colorPrimary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="helperTextTextColor">@color/text_secondary</item>
+        <item name="errorTextColor">@color/error_color</item>
+    </style>
+
+    <!-- Estilo para botones del dialog -->
+    <style name="DialogButtonPrimary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="DialogButtonSecondary" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="rippleColor">@color/colorPrimary</item>
+    </style>
+</resources>

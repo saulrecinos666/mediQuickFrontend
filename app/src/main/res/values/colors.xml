@@ -131,8 +131,25 @@
 
     <!-- Colores adicionales -->
 
-    <color name="background_light">#FAFAFA</color>
 
     <color name="online_status">#4CAF50</color>
     <color name="offline_status">#999999</color>
+
+
+    <!-- Status colors for chips -->
+    <color name="status_pending_bg">#FFF3E0</color>
+    <color name="status_pending_text">#FF6F00</color>
+    <color name="status_pending_border">#FF9800</color>
+
+    <color name="status_assigned_bg">#E3F2FD</color>
+    <color name="status_assigned_text">#1976D2</color>
+    <color name="status_assigned_border">#2196F3</color>
+
+    <color name="status_completed_bg">#E8F5E8</color>
+    <color name="status_completed_text">#2E7D32</color>
+    <color name="status_completed_border">#4CAF50</color>
+
+    <!-- Background colors -->
+    <color name="background_light">#FAFAFA</color>
+    <color name="card_background">#FFFFFF</color>
 </resources>
