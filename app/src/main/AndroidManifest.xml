@@ -49,6 +49,14 @@
             android:windowSoftInputMode="adjustResize"
             android:name=".ui.activities.ConfirmAppointmentActivity"
             android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.MyAppointmentsActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustResize"
+            android:name=".ui.activities.AppointmentDetailActivity"
+            android:exported="false" />
 
 <!--        <activity-->
 <!--            android:name=".ui.activities.MainChatActivity"-->
