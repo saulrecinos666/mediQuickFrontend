@@ -96,6 +96,13 @@ public class HomeActivity extends AppCompatActivity {
                 R.drawable.chat_round_dots,
                 InstitutionListActivity.class
         );
+        setupQuickCard(
+                R.id.card5,
+                "Historial",
+                "Todas mis citas",
+                R.drawable.chat_round_dots,
+                MyAppointmentsActivity.class
+        );
 
         // Puedes agregar más tarjetas reutilizando setupQuickCard
         // setupQuickCard(R.id.card2, "Citas", "Ver próximas citas", R.drawable.calendar, AppointmentsActivity.class);
