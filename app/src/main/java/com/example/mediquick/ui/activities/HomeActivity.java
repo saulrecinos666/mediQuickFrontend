@@ -68,6 +68,42 @@ public class HomeActivity extends AppCompatActivity {
     private String userToken;
     private GetUserDataResponse currentUser;
 
+    // ✅ Agregar este método a tu HomeActivity después de onCreate()
+
+    /**
+     * Verifica si hay mensajes de éxito para mostrar
+     */
+    private void checkForSuccessMessage() {
+        Intent intent = getIntent();
+        if (intent != null && intent.getBooleanExtra("show_success_message", false)) {
+            String successMessage = intent.getStringExtra("success_message");
+
+            if (successMessage != null && !successMessage.isEmpty()) {
+                Log.d(TAG, "Mostrando mensaje de éxito desde intent: " + successMessage);
+
+                // Mostrar el mensaje después de que se cargue la UI
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    showSuccessMessage(successMessage);
+                }, 1000);
+            }
+        }
+    }
+
+    /**
+     * Muestra un mensaje de éxito elegante
+     */
+    private void showSuccessMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+        // Opcional: También puedes mostrar un Snackbar más elegante
+        // View rootView = findViewById(android.R.id.content);
+        // Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
+        //     .setBackgroundTint(ContextCompat.getColor(this, R.color.colorPrimary))
+        //     .setTextColor(Color.WHITE)
+        //     .show();
+    }
+
+    // ✅ Y llamar este método al final de onCreate() en HomeActivity:
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +118,9 @@ public class HomeActivity extends AppCompatActivity {
         handleNotificationPermission();
         initNavigationView();
         setupDrawerMenu();
+
+        // ✅ VERIFICAR MENSAJES DE ÉXITO
+        checkForSuccessMessage();
     }
 
     /**
@@ -834,4 +873,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "HomeActivity destruida");
     }
+
+
 }
