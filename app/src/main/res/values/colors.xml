@@ -109,5 +109,5 @@
     <color name="laboratory_color">#795548</color>
     <color name="general_color">#607D8B</color>
 
-
+    <color name="background_light">#FAFAFA</color>
 </resources>

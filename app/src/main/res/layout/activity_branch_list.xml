@@ -23,7 +23,7 @@
             android:background="@color/colorPrimary"
             app:title="Sucursales"
             app:titleTextColor="@android:color/white"
-            app:navigationIcon="@drawable/ic_back_arrow"
+            app:navigationIcon="@drawable/ic_back_arrow2"
             app:navigationIconTint="@android:color/white"
             app:layout_scrollFlags="scroll|enterAlways" />
 

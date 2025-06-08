@@ -23,7 +23,7 @@
             android:background="#2196F3"
             app:title="Confirmar Cita"
             app:titleTextColor="@android:color/white"
-            app:navigationIcon="@drawable/ic_back_arrow"
+            app:navigationIcon="@drawable/ic_back_arrow2"
             app:navigationIconTint="@android:color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
