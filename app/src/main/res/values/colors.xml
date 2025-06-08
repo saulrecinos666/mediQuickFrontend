@@ -11,4 +11,51 @@
     <color name="button_register_background">#e0e3ea</color>
     <color name="button_register_text">#293f4e</color>
 
+    <color name="primary_color">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+
+    <!-- Colores de fondo -->
+    <color name="background_color">#F8F9FA</color>
+    <color name="surface_color">#FFFFFF</color>
+
+    <!-- Colores de texto -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+
+    <!-- Colores de estado -->
+    <color name="success_color">#4CAF50</color>
+    <color name="success_light">#E8F5E8</color>
+    <color name="success_dark">#2E7D32</color>
+
+    <color name="warning_color">#FF9800</color>
+    <color name="warning_light">#FFF3E0</color>
+    <color name="warning_dark">#F57C00</color>
+
+    <color name="error_color">#F44336</color>
+    <color name="error_light">#FFEBEE</color>
+    <color name="error_dark">#D32F2F</color>
+
+    <color name="info_color">#2196F3</color>
+    <color name="info_light">#E3F2FD</color>
+    <color name="info_dark">#1976D2</color>
+
+    <!-- Colores neutros -->
+    <color name="neutral_color">#9E9E9E</color>
+    <color name="neutral_light">#F5F5F5</color>
+    <color name="neutral_dark">#616161</color>
+
+    <!-- Otros colores -->
+    <color name="divider_color">#E0E0E0</color>
+    <color name="icon_tint">#757575</color>
+
+    <!-- Colores específicos de la app médica -->
+    <color name="medical_primary">#00BCD4</color>
+    <color name="medical_accent">#FF4081</color>
+    <color name="emergency_color">#FF5722</color>
+    <color name="appointment_pending">#FFC107</color>
+    <color name="appointment_confirmed">#2196F3</color>
+    <color name="appointment_completed">#4CAF50</color>
+    <color name="appointment_canceled">#F44336</color>
 </resources>

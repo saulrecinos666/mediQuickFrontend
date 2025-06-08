@@ -1,41 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="8dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/txtEstado"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!-- Indicador de estado (línea vertical) -->
+        <View
+            android:id="@+id/statusIndicator"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/status_indicator_shape"
+            android:backgroundTint="@color/primary_color" />
 
-        <TextView
-            android:id="@+id/txtFecha"
-            android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!-- Contenido principal -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtDoctor"
-            android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <!-- Header con estado y fecha -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
 
-        <TextView
-            android:id="@+id/txtSucursal"
-            android:textSize="14sp"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEstado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pendiente"
+                    android:textSize="12sp"
+                    app:chipBackgroundColor="@color/warning_light"
+                    android:textColor="@color/warning_dark"
+                    app:chipStrokeWidth="0dp"
+                    app:chipMinHeight="28dp"
+                    style="@style/Widget.MaterialComponents.Chip.Action" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/txtFechaCorta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="06 Jun"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <!-- Información de fecha y hora -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    app:tint="@color/icon_tint" />
+
+                <TextView
+                    android:id="@+id/txtFechaCompleta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="06/Jun/2025 - 12:45 PM"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Información del doctor -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_doctor"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    app:tint="@color/icon_tint" />
+
+                <TextView
+                    android:id="@+id/txtDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dr. Roberto Martínez"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_primary" />
+
+            </LinearLayout>
+
+            <!-- Información de la clínica -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_hospital"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    app:tint="@color/icon_tint" />
+
+                <TextView
+                    android:id="@+id/txtSucursal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Clínica Central San Salvador"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Botón de acción -->
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ver"
+                android:textSize="12sp"
+                app:iconSize="16dp"
+                app:icon="@drawable/ic_arrow_forward"
+                app:iconGravity="end"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:minWidth="60dp"
+                android:paddingHorizontal="12dp" />
+
+            <!-- Indicador de urgencia (opcional) -->
+            <View
+                android:id="@+id/urgencyIndicator"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/circle_shape"
+                android:backgroundTint="@color/error_color"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+</com.google.android.material.card.MaterialCardView>
