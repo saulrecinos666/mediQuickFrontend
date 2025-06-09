@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,8 @@ import com.example.mediquick.data.model.GetAssignedAppointmentsResponse;
 import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.ui.adapters.PrescriptionAdapter;
 import com.example.mediquick.utils.SessionManager;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,9 +72,21 @@ public class AssignedAppointmentsActivity extends AppCompatActivity {
 
     private void initViews() {
         recyclerView = findViewById(R.id.recyclerCitas);
-        //progressBar = findViewById(R.id.progressBar); // Agregar al layout si no existe
-       // swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Agregar al layout si no existe
+        progressBar = findViewById(R.id.progressBar); // Agregar al layout si no existe
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout); // Agregar al layout si no existe
         citasAsignadas = new ArrayList<>();
+
+        // Nuevos elementos
+        TextView chipCount = findViewById(R.id.chipCount);
+        LinearLayout layoutEmptyState = findViewById(R.id.layoutEmptyState);
+        FloatingActionButton fabRefresh = findViewById(R.id.fabRefresh);
+        MaterialButton btnRefresh = findViewById(R.id.btnRefresh);
+
+        citasAsignadas = new ArrayList<>();
+
+        // Configurar listeners
+        fabRefresh.setOnClickListener(v -> loadAssignedAppointments());
+        btnRefresh.setOnClickListener(v -> loadAssignedAppointments());
     }
 
     private void setupRecyclerView() {
@@ -181,6 +197,13 @@ public class AssignedAppointmentsActivity extends AppCompatActivity {
                 );
 
                 citasAsignadas.add(card);
+
+                TextView chipCount = findViewById(R.id.chipCount);
+                LinearLayout layoutEmptyState = findViewById(R.id.layoutEmptyState);
+
+                chipCount.setText(String.valueOf(citasAsignadas.size()));
+                layoutEmptyState.setVisibility(citasAsignadas.isEmpty() ? View.VISIBLE : View.GONE);
+                recyclerView.setVisibility(citasAsignadas.isEmpty() ? View.GONE : View.VISIBLE);
 
                 // Log para debug
                 Log.d("APPOINTMENT_CARD", "ID: " + card.getId());
