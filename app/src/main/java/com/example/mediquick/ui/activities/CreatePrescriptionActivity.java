@@ -157,15 +157,29 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
 
     // Nuevo método para actualizar el contador de medicamentos
     private void updateMedicamentosCount() {
-        Chip chipMedicamentosCount = findViewById(R.id.chipMedicamentosCount);
-        if (chipMedicamentosCount != null) {
-            chipMedicamentosCount.setText(String.valueOf(medicamentos.size()));
-        }
+        updateValidationStatus(); // Llamar al método más completo
     }
 
     private void setupRecyclerView() {
         medicamentos.add(new PrescriptionForm());
         formAdapter = new PrescriptionFormAdapter(medicamentos);
+
+        // Configurar listener para acciones del adapter
+        formAdapter.setOnMedicamentoActionListener(new PrescriptionFormAdapter.OnMedicamentoActionListener() {
+            @Override
+            public void onEliminarMedicamento(int position) {
+                Log.d(TAG, "Eliminando medicamento en posición: " + position);
+                formAdapter.eliminarMedicamento(position);
+                updateMedicamentosCount();
+            }
+
+            @Override
+            public void onMedicamentoValidado(int position, boolean esValido) {
+                Log.d(TAG, "Medicamento " + (position + 1) + " validado: " + esValido);
+                updateValidationStatus();
+            }
+        });
+
         recyclerForm.setAdapter(formAdapter);
         recyclerForm.setLayoutManager(new LinearLayoutManager(this));
 
@@ -174,13 +188,35 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         Log.d(TAG, "RecyclerView configurado con " + medicamentos.size() + " medicamento(s) inicial(es)");
     }
 
-    // También agregar el import del Toolbar para evitar conflictos
-// Y corregir setupClickListeners():
+    // Nuevo método para actualizar estado de validación
+    private void updateValidationStatus() {
+        int medicamentosValidos = formAdapter.getMedicamentosValidos();
+        int totalMedicamentos = medicamentos.size();
+
+        // Actualizar el chip con información de validación
+        Chip chipMedicamentosCount = findViewById(R.id.chipMedicamentosCount);
+        if (chipMedicamentosCount != null) {
+            String countText = medicamentosValidos + "/" + totalMedicamentos;
+            chipMedicamentosCount.setText(countText);
+
+            // Cambiar color según validación
+            if (medicamentosValidos == totalMedicamentos && totalMedicamentos > 0) {
+                chipMedicamentosCount.setChipBackgroundColor(
+                        android.content.res.ColorStateList.valueOf(getColor(R.color.status_confirmed)));
+            } else {
+                chipMedicamentosCount.setChipBackgroundColor(
+                        android.content.res.ColorStateList.valueOf(getColor(R.color.colorPrimary)));
+            }
+        }
+
+        // Habilitar/deshabilitar botón guardar
+        btnGuardar.setEnabled(formAdapter.todosMedicamentosValidos());
+    }
+
     private void setupClickListeners() {
         btnAgregar.setOnClickListener(v -> {
             Log.d(TAG, "Agregando nuevo medicamento. Total actual: " + medicamentos.size());
-            medicamentos.add(new PrescriptionForm());
-            formAdapter.notifyItemInserted(medicamentos.size() - 1);
+            formAdapter.agregarMedicamento();
             updateMedicamentosCount();
             Log.d(TAG, "Nuevo medicamento agregado. Total ahora: " + medicamentos.size());
         });
@@ -190,7 +226,7 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
             guardarReceta();
         });
 
-        // Configurar toolbar navigation - USAR androidx.appcompat.widget.Toolbar
+        // Configurar toolbar navigation
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
@@ -296,7 +332,6 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         }
     }
 
-    // Actualizar loadExistingPrescriptions() para incluir el contador
     private void loadExistingPrescriptions() {
         Log.d(TAG, "=== CARGANDO PRESCRIPCIONES EXISTENTES ===");
 
@@ -327,8 +362,11 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
                         form.setDuracion(item.getPrescriptionItemDuration());
                         form.setNotas(item.getPrescriptionItemItemNotes());
 
-                        medicamentos.add(form);
+                        // Si hay información de unidad, extraerla o usar valor por defecto
+                        String unidad = extraerUnidadDeDosis(item.getPrescriptionItemDosage());
+                        form.setUnidad(unidad);
 
+                        medicamentos.add(form);
                         Log.d(TAG, "Medicamento cargado: " + item.getMedicationSummary());
                     }
                 }
@@ -340,7 +378,7 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
             }
 
             formAdapter.notifyDataSetChanged();
-            updateMedicamentosCount(); // Actualizar contador
+            updateMedicamentosCount(); // Actualizar contador y validación
             Log.i(TAG, "✅ Prescripciones existentes cargadas: " + medicamentos.size() + " medicamentos");
 
         } else {
@@ -350,6 +388,105 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         }
     }
 
+    private String extraerUnidadDeDosis(String dosisCompleta) {
+        if (dosisCompleta == null || dosisCompleta.isEmpty()) {
+            return "mg"; // Valor por defecto
+        }
+
+        // Buscar patrones comunes de unidades al final del string
+        String[] unidadesComunes = {"mg", "g", "ml", "cc", "gotas", "comprimidos", "cápsulas", "tabletas", "UI", "mcg"};
+
+        for (String unidad : unidadesComunes) {
+            if (dosisCompleta.toLowerCase().contains(unidad.toLowerCase())) {
+                return unidad;
+            }
+        }
+
+        return "mg"; // Valor por defecto si no se encuentra
+    }
+
+    private void mostrarResumenReceta() {
+        StringBuilder resumen = new StringBuilder();
+        resumen.append("=== RESUMEN DE LA RECETA ===\n");
+        resumen.append("Paciente: ").append(nombrePaciente).append("\n");
+        resumen.append("Total medicamentos: ").append(formAdapter.getMedicamentosValidos()).append("\n\n");
+
+        for (int i = 0; i < medicamentos.size(); i++) {
+            PrescriptionForm med = medicamentos.get(i);
+            if (!med.getNombre().trim().isEmpty()) {
+                resumen.append("Medicamento ").append(i + 1).append(":\n");
+                resumen.append("  • ").append(med.getNombre()).append("\n");
+                resumen.append("  • ").append(med.getDosis()).append(" ").append(med.getUnidad()).append("\n");
+                resumen.append("  • ").append(med.getFrecuencia()).append("\n");
+                resumen.append("  • Duración: ").append(med.getDuracion()).append("\n");
+                if (!med.getNotas().trim().isEmpty()) {
+                    resumen.append("  • Notas: ").append(med.getNotas()).append("\n");
+                }
+                resumen.append("\n");
+            }
+        }
+
+        String notasGenerales = edtNotas.getText().toString().trim();
+        if (!notasGenerales.isEmpty()) {
+            resumen.append("Notas generales: ").append(notasGenerales).append("\n");
+        }
+
+        Log.d(TAG, resumen.toString());
+    }
+    private boolean validarFormularioCompleto() {
+        boolean esValido = true;
+        StringBuilder errores = new StringBuilder();
+
+        // Validar que hay al menos un medicamento
+        if (medicamentos.isEmpty()) {
+            errores.append("• Debe agregar al menos un medicamento\n");
+            esValido = false;
+        }
+
+        // Validar cada medicamento
+        for (int i = 0; i < medicamentos.size(); i++) {
+            PrescriptionForm med = medicamentos.get(i);
+
+            if (med.getNombre().trim().isEmpty()) {
+                errores.append("• Medicamento ").append(i + 1).append(": Falta el nombre\n");
+                esValido = false;
+            }
+
+            if (med.getDosis().trim().isEmpty()) {
+                errores.append("• Medicamento ").append(i + 1).append(": Falta la dosis\n");
+                esValido = false;
+            }
+
+            if (med.getUnidad().trim().isEmpty()) {
+                errores.append("• Medicamento ").append(i + 1).append(": Falta la unidad\n");
+                esValido = false;
+            }
+
+            if (med.getFrecuencia().trim().isEmpty()) {
+                errores.append("• Medicamento ").append(i + 1).append(": Falta la frecuencia\n");
+                esValido = false;
+            }
+
+            if (med.getDuracion().trim().isEmpty()) {
+                errores.append("• Medicamento ").append(i + 1).append(": Falta la duración\n");
+                esValido = false;
+            }
+        }
+
+        if (!esValido) {
+            String mensajeError = "Por favor complete los siguientes campos:\n\n" + errores.toString();
+
+            // Mostrar dialog con errores específicos
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Campos Incompletos")
+                    .setMessage(mensajeError)
+                    .setPositiveButton("Entendido", null)
+                    .setIcon(R.drawable.ic_info)
+                    .show();
+        }
+
+        return esValido;
+    }
     private void showLoading(boolean show) {
         if (progressBar != null) {
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -379,36 +516,18 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         Log.d(TAG, "Paciente: " + nombrePaciente);
         Log.d(TAG, "Total de medicamentos a validar: " + medicamentos.size());
 
-        // Validar medicamentos
-        boolean todosCamposCompletos = true;
-        for (int i = 0; i < medicamentos.size(); i++) {
-            PrescriptionForm m = medicamentos.get(i);
-            Log.d(TAG, "--- Medicamento " + (i + 1) + " ---");
-            Log.d(TAG, "  Nombre: '" + m.getNombre() + "'");
-            Log.d(TAG, "  Dosis: '" + m.getDosis() + "'");
-            Log.d(TAG, "  Frecuencia: '" + m.getFrecuencia() + "'");
-            Log.d(TAG, "  Duración: '" + m.getDuracion() + "'");
-
-            if (m.getNombre().isEmpty() || m.getDosis().isEmpty() ||
-                    m.getFrecuencia().isEmpty() || m.getDuracion().isEmpty()) {
-                Log.w(TAG, "❌ Medicamento " + (i + 1) + " tiene campos vacíos");
-                todosCamposCompletos = false;
-            } else {
-                Log.i(TAG, "✅ Medicamento " + (i + 1) + " está completo");
-            }
+        // Usar validación del adapter
+        if (!formAdapter.todosMedicamentosValidos()) {
+            Log.w(TAG, "❌ VALIDACIÓN FALLIDA: Medicamentos incompletos");
+            Toast.makeText(this, "Todos los campos obligatorios de medicamentos deben completarse", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         // Validar notas
         String notas = edtNotas.getText().toString().trim();
         Log.d(TAG, "Notas adicionales: '" + notas + "'");
 
-        if (!todosCamposCompletos) {
-            Log.w(TAG, "❌ VALIDACIÓN FALLIDA: Campos incompletos");
-            Toast.makeText(this, "Todos los campos obligatorios deben completarse", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Log.i(TAG, "✅ VALIDACIÓN EXITOSA: Todos los campos están completos");
+        Log.i(TAG, "✅ VALIDACIÓN EXITOSA: " + formAdapter.getMedicamentosValidos() + " medicamentos válidos");
 
         // Crear request para la API
         PrescriptionRequest request = PrescriptionRequest.fromFormData(appointmentId, notas, medicamentos);
