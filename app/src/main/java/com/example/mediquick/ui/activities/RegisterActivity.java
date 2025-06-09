@@ -43,7 +43,7 @@ import retrofit2.http.POST;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // UI Components (usando los IDs del layout original)
+    // UI Components
     private EditText etFechaNacimiento, etPrimerNombre, etSegundoNombre, etPrimerApellido, etSegundoApellido;
     private EditText etCorreo, etDui, etPass, etTelefono, etDireccion;
     private Button btnContinuar, btnCancelar;
@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final Pattern DUI_PATTERN = Pattern.compile("^\\d{8}-\\d{1}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\d{4}-\\d{4}$");
 
-    // Validation flags
+    // Validation flags (solo para estado interno, no muestran errores)
     private boolean isEmailValid = false;
     private boolean isPasswordValid = false;
     private boolean isDuiValid = false;
@@ -87,7 +87,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        // Inicializar usando los IDs del layout original
         etFechaNacimiento = findViewById(R.id.etFechaNacimiento);
         etPrimerNombre = findViewById(R.id.etPrimerNombre);
         etSegundoNombre = findViewById(R.id.etSegundoNombre);
@@ -124,35 +123,32 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupValidation() {
-        // Real-time validation para email
+        // Validación SILENCIOSA en tiempo real (solo actualiza flags internos)
         etCorreo.addTextChangedListener(new ValidationTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isEmailValid = validateEmail(s.toString());
+                isEmailValid = validateEmailSilent(s.toString());
             }
         });
 
-        // Real-time validation para password
         etPass.addTextChangedListener(new ValidationTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isPasswordValid = validatePassword(s.toString());
+                isPasswordValid = validatePasswordSilent(s.toString());
             }
         });
 
-        // Real-time validation para DUI
         etDui.addTextChangedListener(new ValidationTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isDuiValid = validateDui(s.toString());
+                isDuiValid = validateDuiSilent(s.toString());
             }
         });
 
-        // Real-time validation para phone
         etTelefono.addTextChangedListener(new ValidationTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isPhoneValid = validatePhone(s.toString());
+                isPhoneValid = validatePhoneSilent(s.toString());
             }
         });
     }
@@ -219,7 +215,25 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private boolean validateEmail(String email) {
+    // ===== VALIDACIONES SILENCIOSAS (no muestran Toast) =====
+    private boolean validateEmailSilent(String email) {
+        return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean validatePasswordSilent(String password) {
+        return password.length() >= MIN_PASSWORD_LENGTH && isValidPassword(password);
+    }
+
+    private boolean validateDuiSilent(String dui) {
+        return !dui.isEmpty() && DUI_PATTERN.matcher(dui).matches();
+    }
+
+    private boolean validatePhoneSilent(String phone) {
+        return !phone.isEmpty() && PHONE_PATTERN.matcher(phone).matches();
+    }
+
+    // ===== VALIDACIONES CON MENSAJES (solo para el submit) =====
+    private boolean validateEmailWithMessage(String email) {
         if (email.isEmpty()) {
             showFieldError("El correo electrónico es requerido");
             return false;
@@ -230,7 +244,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean validatePassword(String password) {
+    private boolean validatePasswordWithMessage(String password) {
         if (password.isEmpty()) {
             showFieldError("La contraseña es requerida");
             return false;
@@ -244,7 +258,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean validateDui(String dui) {
+    private boolean validateDuiWithMessage(String dui) {
         if (dui.isEmpty()) {
             showFieldError("El DUI es requerido");
             return false;
@@ -255,7 +269,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean validatePhone(String phone) {
+    private boolean validatePhoneWithMessage(String phone) {
         if (phone.isEmpty()) {
             showFieldError("El teléfono es requerido");
             return false;
@@ -288,8 +302,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void showFieldError(String message) {
-        // Como no tenemos TextInputLayout, mostramos Toast para errores de validación
-        // Para una mejor UX, considera actualizar a Material Design TextInputLayout
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -306,7 +318,7 @@ public class RegisterActivity extends AppCompatActivity {
         String telefono = etTelefono.getText().toString().trim();
         String direccion = etDireccion.getText().toString().trim();
 
-        // Validate required fields
+        // Validate required fields ONE BY ONE con focus
         if (primerNombre.isEmpty()) {
             showFieldError("El primer nombre es requerido");
             etPrimerNombre.requestFocus();
@@ -340,27 +352,23 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Validate using the stored validation flags
-        if (!isEmailValid) {
-            validateEmail(correo); // This will show the error
+        // Validate fields with specific messages
+        if (!validateEmailWithMessage(correo)) {
             etCorreo.requestFocus();
             return;
         }
 
-        if (!isDuiValid) {
-            validateDui(dui); // This will show the error
+        if (!validateDuiWithMessage(dui)) {
             etDui.requestFocus();
             return;
         }
 
-        if (!isPasswordValid) {
-            validatePassword(password); // This will show the error
+        if (!validatePasswordWithMessage(password)) {
             etPass.requestFocus();
             return;
         }
 
-        if (!isPhoneValid) {
-            validatePhone(telefono); // This will show the error
+        if (!validatePhoneWithMessage(telefono)) {
             etTelefono.requestFocus();
             return;
         }
