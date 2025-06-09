@@ -1,27 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
-    android:orientation="vertical"
-    android:background="@color/colorPrimary"
-    android:gravity="bottom"
-    android:padding="16dp">
+    android:layout_height="200dp"
+    android:background="@drawable/nav_header_background"
+    android:padding="16dp"
+    android:fitsSystemWindows="true">
 
-    <ImageView
-        android:id="@+id/imageLogo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/logo"
-        android:contentDescription="App Logo"
-        android:scaleType="centerCrop" />
+    <!-- Imagen de perfil circular -->
+
+    <!-- Nombre del usuario -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="28dp"
+        android:background="@color/white"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo_sinfondo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
 
     <TextView
         android:id="@+id/textUserName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Usuario"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageProfile" />
+
+    <!-- Email del usuario -->
+    <TextView
+        android:id="@+id/textUserEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="10dp"
+        android:alpha="0.9"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="usuario@mediquick.com"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textUserName" />
+
+    <!-- Logo pequeño en la esquina -->
+
+    <!-- Versión de la app -->
+
+    <TextView
+        android:id="@+id/textAppVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MediQuick"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:paddingTop="8dp" />
-</LinearLayout>
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:alpha="0.7"
+        android:text="MediQuick v1.0"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
