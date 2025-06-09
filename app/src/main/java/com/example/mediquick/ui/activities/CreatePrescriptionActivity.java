@@ -20,7 +20,9 @@ import com.example.mediquick.data.model.PrescriptionRequest;
 import com.example.mediquick.data.model.ResponsePrescription;
 import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.ui.adapters.PrescriptionFormAdapter;
+import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
+import androidx.core.widget.NestedScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +42,7 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
     private Button btnGuardar, btnAgregar;
     private TextView txtPaciente, txtCitaInfo;
     private ProgressBar progressBar;
-    private LinearLayout layoutContent;
-
+    private NestedScrollView layoutContent;
     // Datos recibidos del Intent
     private String appointmentId;
     private String nombrePaciente;
@@ -123,9 +124,21 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         btnGuardar = findViewById(R.id.btnGuardar);
         btnAgregar = findViewById(R.id.btnAgregar);
         txtPaciente = findViewById(R.id.txtPacienteHeader);
-       // txtCitaInfo = findViewById(R.id.txtCitaInfo); // Agregar al layout si no existe
-       // progressBar = findViewById(R.id.progressBar); // Agregar al layout si no existe
-       // layoutContent = findViewById(R.id.layoutContent); // Agregar al layout si no existe
+        txtCitaInfo = findViewById(R.id.txtCitaInfo);
+        progressBar = findViewById(R.id.progressBar);
+        layoutContent = findViewById(R.id.layoutContent);
+
+        // Nuevos elementos
+        Chip chipMedicamentosCount = findViewById(R.id.chipMedicamentosCount);
+        // Configurar toolbar
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        Log.d(TAG, "Views inicializadas correctamente");
 
         Log.d(TAG, "Views inicializadas correctamente");
     }
@@ -142,20 +155,33 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         Log.d(TAG, "API Service configurado");
     }
 
+    // Nuevo método para actualizar el contador de medicamentos
+    private void updateMedicamentosCount() {
+        Chip chipMedicamentosCount = findViewById(R.id.chipMedicamentosCount);
+        if (chipMedicamentosCount != null) {
+            chipMedicamentosCount.setText(String.valueOf(medicamentos.size()));
+        }
+    }
+
     private void setupRecyclerView() {
         medicamentos.add(new PrescriptionForm());
         formAdapter = new PrescriptionFormAdapter(medicamentos);
         recyclerForm.setAdapter(formAdapter);
         recyclerForm.setLayoutManager(new LinearLayoutManager(this));
 
+        // Actualizar contador inicial
+        updateMedicamentosCount();
         Log.d(TAG, "RecyclerView configurado con " + medicamentos.size() + " medicamento(s) inicial(es)");
     }
 
+    // También agregar el import del Toolbar para evitar conflictos
+// Y corregir setupClickListeners():
     private void setupClickListeners() {
         btnAgregar.setOnClickListener(v -> {
             Log.d(TAG, "Agregando nuevo medicamento. Total actual: " + medicamentos.size());
             medicamentos.add(new PrescriptionForm());
             formAdapter.notifyItemInserted(medicamentos.size() - 1);
+            updateMedicamentosCount();
             Log.d(TAG, "Nuevo medicamento agregado. Total ahora: " + medicamentos.size());
         });
 
@@ -163,6 +189,10 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
             Log.d(TAG, "Intentando guardar receta...");
             guardarReceta();
         });
+
+        // Configurar toolbar navigation - USAR androidx.appcompat.widget.Toolbar
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void setupPatientInfo() {
@@ -262,9 +292,11 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
                     branchName + " • " + appointmentDate + "\n" +
                     "Estado: " + appointmentState;
             txtCitaInfo.setText(citaInfo);
+            txtCitaInfo.setVisibility(View.VISIBLE);
         }
     }
 
+    // Actualizar loadExistingPrescriptions() para incluir el contador
     private void loadExistingPrescriptions() {
         Log.d(TAG, "=== CARGANDO PRESCRIPCIONES EXISTENTES ===");
 
@@ -308,11 +340,13 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
             }
 
             formAdapter.notifyDataSetChanged();
+            updateMedicamentosCount(); // Actualizar contador
             Log.i(TAG, "✅ Prescripciones existentes cargadas: " + medicamentos.size() + " medicamentos");
 
         } else {
             Log.d(TAG, "No hay prescripciones existentes para esta cita");
             // Mantener el medicamento vacío por defecto
+            updateMedicamentosCount();
         }
     }
 
@@ -384,19 +418,22 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
         enviarPrescripcionAPI(request);
     }
 
+    // Actualizar el método enviarPrescripcionAPI() para el nuevo botón
     private void enviarPrescripcionAPI(PrescriptionRequest request) {
         Log.d(TAG, "Enviando prescripción a API...");
 
         // Deshabilitar botón mientras se procesa
         btnGuardar.setEnabled(false);
         btnGuardar.setText("Guardando...");
+        //btnGuardar.setIcon(null); // Quitar icono temporalmente
 
         apiService.createPrescription(request)
                 .enqueue(new Callback<ResponsePrescription>() {
                     @Override
                     public void onResponse(Call<ResponsePrescription> call, Response<ResponsePrescription> response) {
                         btnGuardar.setEnabled(true);
-                        btnGuardar.setText("Guardar");
+                        btnGuardar.setText("Guardar Receta");
+                       // btnGuardar.setIcon(ContextCompat.getDrawable(CreatePrescriptionActivity.this, R.drawable.ic_save));
 
                         Log.d(TAG, "Respuesta recibida - Código: " + response.code());
 
@@ -405,11 +442,9 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
                             Log.d(TAG, "API Response: " + apiResponse.toString());
 
                             if (apiResponse.isSuccess()) {
-                                // Éxito
                                 ResponsePrescription.PrescriptionData data = apiResponse.getData();
                                 Log.i(TAG, "✅ Prescripción creada exitosamente");
                                 Log.i(TAG, "ID de prescripción: " + data.getPrescriptionId());
-                                // TODO: Al guardar redireccionar a todas las citas y volver hacer la solicitud
 
                                 Toast.makeText(CreatePrescriptionActivity.this,
                                         "✅ " + apiResponse.getMessage() + " (ID: " + data.getPrescriptionId() + ")",
@@ -432,7 +467,8 @@ public class CreatePrescriptionActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponsePrescription> call, Throwable t) {
                         btnGuardar.setEnabled(true);
-                        btnGuardar.setText("Guardar");
+                        btnGuardar.setText("Guardar Receta");
+                       // btnGuardar.setIcon(ContextCompat.getDrawable(CreatePrescriptionActivity.this, R.drawable.ic_save));
 
                         Log.e(TAG, "❌ Error de conexión: " + t.getMessage());
                         Toast.makeText(CreatePrescriptionActivity.this,
