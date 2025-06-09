@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +42,6 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private static final String TAG = "MyAppointments";
 
     private RecyclerView recycler;
-    private TextView txtEmpty;
     private ProgressBar progressBar;
     private List<AppointmentSummary> citas = new ArrayList<>();
     private AppointmentAdapter adapter;
@@ -51,6 +51,10 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private String userId;
     private String userToken;
+
+    // Nuevas views
+    private TextView txtTotalCitas, txtCitasPendientes, txtCitasCompletadas;
+    private LinearLayout layoutEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +69,21 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        // Views básicas OBLIGATORIAS
         recycler = findViewById(R.id.recyclerCitasPaciente);
-        txtEmpty = findViewById(R.id.emptyCitas);
         progressBar = findViewById(R.id.progressBarPaciente);
 
+        // Views nuevas - verificar que existan en el layout
+        txtTotalCitas = findViewById(R.id.txtTotalCitas);
+        txtCitasPendientes = findViewById(R.id.txtCitasPendientes);
+        txtCitasCompletadas = findViewById(R.id.txtCitasCompletadas);
+        layoutEmpty = findViewById(R.id.layoutEmpty);
+
         Log.d(TAG, "Views inicializadas correctamente");
+
+        // Verificar qué views existen
+        Log.d(TAG, "txtTotalCitas: " + (txtTotalCitas != null ? "OK" : "NULL"));
+        Log.d(TAG, "layoutEmpty: " + (layoutEmpty != null ? "OK" : "NULL"));
     }
 
     private void setupSession() {
@@ -83,6 +97,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        // OPCIÓN 1: Usar el adapter simple (recomendado para evitar errores)
         adapter = new AppointmentAdapter(citas, cita -> {
             Log.d(TAG, "Cita seleccionada: " + cita.getAppointmentId());
             Intent intent = new Intent(this, AppointmentDetailActivity.class);
@@ -175,8 +190,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
 
             Log.d(TAG, "Cita agregada:");
             Log.d(TAG, "  ID: " + appointment.getAppointmentId());
-//            Log.d(TAG, "  Estado: " + appointment.getStatus());
-//            Log.d(TAG, "  Sucursal: " + appointment.getClinic());
+            Log.d(TAG, "  Estado: " + appointment.getStateDescription());
             Log.d(TAG, "  Fecha: " + appointment.getDateTime());
         }
 
@@ -184,6 +198,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
         updateEmptyState();
+        updateDashboardStats(); // Solo si las views existen
     }
 
     private AppointmentSummary convertToAppointmentSummary(GetAllMyAppointments.AppointmentData appointmentData) {
@@ -218,9 +233,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private String getDoctorName(GetAllMyAppointments.AppointmentData appointmentData) {
         if (appointmentData.getDoctorUser() != null) {
             GetAllMyAppointments.DoctorUser doctor = appointmentData.getDoctorUser();
-
             String doctorDisplayName = doctor.getDisplayName();
-
             Log.d(TAG, "Doctor asignado: " + doctorDisplayName);
             return doctorDisplayName;
         } else {
@@ -283,15 +296,19 @@ public class MyAppointmentsActivity extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
         updateEmptyState();
+        updateDashboardStats();
 
         Toast.makeText(this, "Cargando datos de ejemplo", Toast.LENGTH_SHORT).show();
     }
 
     private void showLoading(boolean show) {
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (progressBar != null) {
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
 
-        if (show) {
-            txtEmpty.setVisibility(View.GONE);
+        // Solo ocultar empty layout si existe
+        if (layoutEmpty != null && show) {
+            layoutEmpty.setVisibility(View.GONE);
         }
 
         Log.d(TAG, "Loading state: " + (show ? "VISIBLE" : "GONE"));
@@ -299,8 +316,15 @@ public class MyAppointmentsActivity extends AppCompatActivity {
 
     private void updateEmptyState() {
         boolean isEmpty = citas.isEmpty();
-        txtEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        recycler.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+
+        // Solo actualizar si las views existen
+        if (layoutEmpty != null) {
+            layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        }
+
+        if (recycler != null) {
+            recycler.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        }
 
         Log.d(TAG, "Empty state: " + (isEmpty ? "VISIBLE" : "GONE"));
     }
@@ -309,9 +333,15 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         citas.clear();
         adapter.notifyDataSetChanged();
 
-        txtEmpty.setText(message);
-        updateEmptyState();
+        // Solo actualizar el mensaje si la view existe
+        if (layoutEmpty != null) {
+            TextView txtEmptyTitle = layoutEmpty.findViewById(R.id.txtEmptyTitle);
+            if (txtEmptyTitle != null) {
+                txtEmptyTitle.setText(message);
+            }
+        }
 
+        updateEmptyState();
         Log.d(TAG, "Mostrando empty state: " + message);
     }
 
@@ -319,6 +349,38 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         Log.e(TAG, "Mostrando error: " + message);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         updateEmptyState();
+    }
+
+    private void updateDashboardStats() {
+        // Solo actualizar si las views existen
+        if (txtTotalCitas != null && txtCitasPendientes != null && txtCitasCompletadas != null) {
+            int total = citas.size();
+            int pendientes = 0;
+            int completadas = 0;
+
+            for (AppointmentSummary appointment : citas) {
+                String status = appointment.getStateDescription().toLowerCase();
+                switch (status) {
+                    case "created":
+                    case "pendiente":
+                    case "confirmed":
+                        pendientes++;
+                        break;
+                    case "completed":
+                    case "completada":
+                        completadas++;
+                        break;
+                }
+            }
+
+            txtTotalCitas.setText(String.valueOf(total));
+            txtCitasPendientes.setText(String.valueOf(pendientes));
+            txtCitasCompletadas.setText(String.valueOf(completadas));
+
+            Log.d(TAG, "Estadísticas actualizadas - Total: " + total + ", Pendientes: " + pendientes + ", Completadas: " + completadas);
+        } else {
+            Log.d(TAG, "Views de estadísticas no encontradas, saltando actualización");
+        }
     }
 
     private String formatFecha(String isoDate) {
@@ -365,7 +427,6 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Opcional: recargar citas al volver a la actividad
         Log.d(TAG, "MyAppointmentsActivity resumed");
     }
 

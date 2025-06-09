@@ -71,4 +71,22 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Material Design Components (REQUERIDO para los chips y nuevos componentes)
+    implementation("com.google.android.material:material:1.10.0")
+
+    // AndroidX Core (para compatibilidad)
+    implementation("androidx.core:core:1.10.0")
+
+    // Constraint Layout (si no lo tienes)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    // Coordinator Layout (para el FAB y comportamientos)
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+
+    // RecyclerView (si no está incluido)
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
+
+    // CardView (si no está incluido)
+    implementation("androidx.cardview:cardview:1.0.0")
 }

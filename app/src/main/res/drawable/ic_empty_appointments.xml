@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120"
+    android:tint="?attr/colorOnSurface"
+    android:alpha="0.6">
+
+    <!-- Calendario principal -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M95,15H90V5h-10v10H40V5H30v10H25c-5.5,0 -10,4.5 -10,10v70c0,5.5 4.5,10 10,10h70c5.5,0 10,-4.5 10,-10V25C105,19.5 100.5,15 95,15zM95,95H25V40h70V95z"/>
+
+    <!-- Cuadrícula del calendario -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M35,50h10v10H35V50zM55,50h10v10H55V50zM75,50h10v10H75V50zM35,70h10v10H35V70zM55,70h10v10H55V70zM75,70h10v10H75V70z"/>
+
+    <!-- Anillos superiores del calendario -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M30,5h10v20H30V5zM80,5h10v20H80V5z"/>
+
+    <!-- Símbolo de vacío (círculo con línea diagonal) -->
+<!--    <circle-->
+<!--        android:strokeColor="@android:color/white"-->
+<!--        android:strokeWidth="3"-->
+<!--        android:fillColor="@android:color/transparent"-->
+<!--        android:cx="60"-->
+<!--        android:cy="67.5" />-->
+
+    <!-- Línea diagonal del símbolo de vacío -->
+    <path
+        android:strokeColor="@android:color/white"
+        android:strokeWidth="3"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M46,53.5 L74,81.5"/>
+
+</vector>

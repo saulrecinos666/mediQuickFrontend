@@ -10,6 +10,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/card_background"
         app:cardBackgroundColor="#ebf1fd"
+        app:strokeColor="@color/colorPrimary"
         app:cardCornerRadius="16dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout

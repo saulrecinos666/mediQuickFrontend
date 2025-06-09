@@ -7,18 +7,23 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mediquick.BuildConfig;
 import com.example.mediquick.R;
 import com.example.mediquick.data.api.ApiClient;
-import com.example.mediquick.data.model.CreateAppointmentRequest;
 import com.example.mediquick.data.model.CreateAppointmentResponse;
 import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.utils.SessionManager;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -29,12 +34,24 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
 
     private static final String TAG = "ConfirmAppointment";
 
-    private TextView txtResumen;
-    private Button btnConfirmar;
-    private ProgressBar progressBar;
+    // Views
+    private MaterialToolbar toolbar;
+    private TextView txtProcedureName;
+    private TextView txtBranchName;
+    private TextView txtInstitutionName;
+    private TextView txtProcedureCost;
+    private TextView txtResumenCita;
+    private TextView tvLoadingMessage;
+    private MaterialButton btnConfirmar;
+    private MaterialButton btnCancelar;
+    private View loadingOverlay;
+    private View costLayout;
+    private View institutionLayout;
+
+    // Data
     private SessionManager sessionManager;
-    // Datos recibidos del Intent
-    private String procedureId, procedureName, branchId, branchName;
+    private String procedureId, procedureName, branchId, branchName, institutionName;
+    private double procedureCost = 0.0;
 
     // API
     private AppointmentService apiService;
@@ -46,9 +63,9 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
 
         receiveIntentData();
         initViews();
+        setupToolbar();
         setupApiService();
         setupClickListeners();
-
         displayAppointmentSummary();
     }
 
@@ -57,53 +74,71 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
         procedureName = getIntent().getStringExtra("procedureName");
         branchId = getIntent().getStringExtra("branchId");
         branchName = getIntent().getStringExtra("branchName");
+        institutionName = getIntent().getStringExtra("institutionName");
+        procedureCost = getIntent().getDoubleExtra("procedureCost", 0.0);
 
         Log.d(TAG, "=== DATOS RECIBIDOS ===");
         Log.d(TAG, "Procedure ID: " + procedureId);
         Log.d(TAG, "Procedure Name: " + procedureName);
         Log.d(TAG, "Branch ID: " + branchId);
         Log.d(TAG, "Branch Name: " + branchName);
+        Log.d(TAG, "Institution Name: " + institutionName);
+        Log.d(TAG, "Procedure Cost: " + procedureCost);
 
-        // Validar datos recibidos
+        // Validar datos críticos
         if (procedureId == null || procedureId.isEmpty()) {
             Log.w(TAG, "⚠️ WARNING: procedureId está vacío o es null");
-        } else {
-            Log.i(TAG, "✅ procedureId válido: " + procedureId);
         }
-
         if (branchId == null || branchId.isEmpty()) {
             Log.w(TAG, "⚠️ WARNING: branchId está vacío o es null");
-        } else {
-            Log.i(TAG, "✅ branchId válido: " + branchId);
         }
     }
 
     private void initViews() {
-        txtResumen = findViewById(R.id.txtResumenCita);
+        toolbar = findViewById(R.id.toolbar);
+        txtProcedureName = findViewById(R.id.txtProcedureName);
+        txtBranchName = findViewById(R.id.txtBranchName);
+        txtInstitutionName = findViewById(R.id.txtInstitutionName);
+        txtProcedureCost = findViewById(R.id.txtProcedureCost);
+        txtResumenCita = findViewById(R.id.txtResumenCita);
+        tvLoadingMessage = findViewById(R.id.tvLoadingMessage);
         btnConfirmar = findViewById(R.id.btnConfirmarCita);
-        progressBar = findViewById(R.id.progressBarConfirmar);
+        btnCancelar = findViewById(R.id.btnCancelar);
+        loadingOverlay = findViewById(R.id.loadingOverlay);
+        costLayout = findViewById(R.id.costLayout);
+        institutionLayout = findViewById(R.id.institutionLayout);
 
         Log.d(TAG, "Views inicializadas correctamente");
     }
 
-    private void setupApiService() {
-        // ✅ AGREGAR ESTA LÍNEA - Inicializar SessionManager
-        sessionManager = new SessionManager(this);
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
+        toolbar.setNavigationOnClickListener(v -> {
+            Log.d(TAG, "Navigation back pressed");
+            onBackPressed();
+        });
+    }
+
+    private void setupApiService() {
+        sessionManager = new SessionManager(this);
         String jwt = sessionManager.getAuthToken();
 
         Log.d(TAG, "JWT Token presente: " + (jwt != null && !jwt.isEmpty()));
 
-        // Usar cliente autenticado si hay token
         if (jwt != null && !jwt.trim().isEmpty()) {
-            apiService = ApiClient.getAuthenticatedClient(BuildConfig.BACKEND_BASE_URL, jwt).create(AppointmentService.class);
+            apiService = ApiClient.getAuthenticatedClient(BuildConfig.BACKEND_BASE_URL, jwt)
+                    .create(AppointmentService.class);
             Log.d(TAG, "API Service configurado CON autenticación");
         } else {
-            apiService = ApiClient.getUnauthenticatedClient(BuildConfig.BACKEND_BASE_URL).create(AppointmentService.class);
+            apiService = ApiClient.getUnauthenticatedClient(BuildConfig.BACKEND_BASE_URL)
+                    .create(AppointmentService.class);
             Log.w(TAG, "API Service configurado SIN autenticación - Token no disponible");
         }
-
-        Log.d(TAG, "API Service configurado con base URL: " + BuildConfig.BACKEND_BASE_URL);
     }
 
     private void setupClickListeners() {
@@ -111,20 +146,80 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
             Log.d(TAG, "Botón confirmar presionado");
             confirmarCita();
         });
+
+        btnCancelar.setOnClickListener(v -> {
+            Log.d(TAG, "Botón cancelar presionado");
+            onBackPressed();
+        });
     }
 
     private void displayAppointmentSummary() {
-        StringBuilder summary = new StringBuilder();
-        summary.append("¿Deseas agendar una cita para:\n\n");
-        summary.append("📋 Procedimiento: ").append(procedureName != null ? procedureName : "No especificado").append("\n");
-        if (branchName != null && !branchName.isEmpty()) {
-            summary.append("🏥 Sucursal: ").append(branchName).append("\n");
+        // Configurar nombre del procedimiento
+        if (txtProcedureName != null) {
+            txtProcedureName.setText(procedureName != null ? procedureName : "Procedimiento no especificado");
         }
-        summary.append("\n¡Recibirás una notificación cuando esté agendada!");
 
-        txtResumen.setText(summary.toString());
+        // Configurar nombre de la sucursal
+        if (txtBranchName != null) {
+            txtBranchName.setText(branchName != null ? branchName : "Sucursal no especificada");
+        }
 
-        Log.d(TAG, "Resumen mostrado: " + summary.toString());
+        // Configurar nombre de la institución
+        if (txtInstitutionName != null && institutionLayout != null) {
+            if (institutionName != null && !institutionName.trim().isEmpty()) {
+                txtInstitutionName.setText(institutionName);
+                institutionLayout.setVisibility(View.VISIBLE);
+            } else {
+                institutionLayout.setVisibility(View.GONE);
+            }
+        }
+
+        // Configurar costo
+        if (txtProcedureCost != null && costLayout != null) {
+            if (procedureCost > 0) {
+                String formattedCost = formatCurrency(procedureCost);
+                txtProcedureCost.setText(formattedCost);
+                costLayout.setVisibility(View.VISIBLE);
+            } else {
+                costLayout.setVisibility(View.GONE);
+            }
+        }
+
+        // Configurar resumen dinámico
+        if (txtResumenCita != null) {
+            String summary = buildDynamicSummary();
+            txtResumenCita.setText(summary);
+        }
+
+        Log.d(TAG, "Resumen de cita configurado");
+    }
+
+    private String formatCurrency(double amount) {
+        try {
+            NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("es", "MX"));
+            return formatter.format(amount);
+        } catch (Exception e) {
+            return "$" + String.format("%.2f", amount);
+        }
+    }
+
+    private String buildDynamicSummary() {
+        StringBuilder summary = new StringBuilder();
+        summary.append("Al confirmar, se enviará una solicitud de cita para ");
+
+        if (procedureName != null) {
+            summary.append("\"").append(procedureName).append("\"");
+        } else {
+            summary.append("el procedimiento seleccionado");
+        }
+
+        if (branchName != null) {
+            summary.append(" en ").append(branchName);
+        }
+
+        summary.append(".\n\nRecibirás una notificación cuando el personal médico confirme tu cita.");
+
+        return summary.toString();
     }
 
     private boolean isNetworkAvailable() {
@@ -140,75 +235,52 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
     private void confirmarCita() {
         // Validar datos antes de enviar
         if (!isDataValid()) {
-            showError("Error: Datos de cita incompletos");
+            showErrorMessage("Error: Datos de cita incompletos");
             return;
         }
 
         if (!isNetworkAvailable()) {
-            showError("Error: Sin conexión a internet");
+            showErrorMessage("Error: Sin conexión a internet");
             return;
         }
 
         Log.d(TAG, "=== INICIANDO CREACIÓN DE CITA ===");
-        Log.d(TAG, "Procedure ID: '" + procedureId + "' (length: " + procedureId.length() + ")");
-        Log.d(TAG, "Branch ID: '" + branchId + "' (length: " + branchId.length() + ")");
 
         // Verificar sessionManager
         if (sessionManager != null) {
             String token = sessionManager.getAuthToken();
             Log.d(TAG, "Token disponible: " + (token != null && !token.trim().isEmpty()));
-            if (token != null) {
-                Log.d(TAG, "Token length: " + token.length());
-            }
         } else {
-            Log.e(TAG, "❌ SessionManager es null - Esto es un error crítico");
-            showError("Error: Sesión no disponible");
+            Log.e(TAG, "❌ SessionManager es null");
+            showErrorMessage("Error: Sesión no disponible");
             return;
         }
 
         // Mostrar loading
-        showLoading(true);
+        showLoading(true, "Creando tu cita...");
 
-        Log.d(TAG, "=== ENVIANDO MULTIPART FORM DATA ===");
-        Log.d(TAG, "Usando @Multipart con @Part");
-
-        // ✅ CREAR REQUEST BODIES PARA MULTIPART
+        // Crear request bodies para multipart
         RequestBody branchIdBody = RequestBody.create(
-                okhttp3.MediaType.parse("text/plain"),
-                branchId
-        );
-
+                okhttp3.MediaType.parse("text/plain"), branchId);
         RequestBody medicalProcedureIdBody = RequestBody.create(
-                okhttp3.MediaType.parse("text/plain"),
-                procedureId
-        );
+                okhttp3.MediaType.parse("text/plain"), procedureId);
 
-        Log.d(TAG, "RequestBodies creados correctamente");
+        Log.d(TAG, "Enviando request a la API");
 
-        // Enviar request a la API usando multipart data
+        // Enviar request a la API
         Call<CreateAppointmentResponse> call = apiService.createAppointment(branchIdBody, medicalProcedureIdBody);
-
-        // Log del request antes de enviarlo
-        Log.d(TAG, "Call creado: " + call.getClass().getSimpleName());
-        Log.d(TAG, "Request URL: " + call.request().url());
-        Log.d(TAG, "Request Method: " + call.request().method());
 
         call.enqueue(new Callback<CreateAppointmentResponse>() {
             @Override
-            public void onResponse(Call<CreateAppointmentResponse> call, Response<CreateAppointmentResponse> response) {
-                Log.d(TAG, "=== HEADERS DE LA REQUEST ENVIADA ===");
-                Log.d(TAG, "Final Content-Type: " + call.request().header("Content-Type"));
-                Log.d(TAG, "Final Authorization: " + call.request().header("Authorization"));
-
-                showLoading(false);
+            public void onResponse(Call<CreateAppointmentResponse> call,
+                                   Response<CreateAppointmentResponse> response) {
+                showLoading(false, null);
                 handleAppointmentResponse(response);
             }
 
             @Override
             public void onFailure(Call<CreateAppointmentResponse> call, Throwable t) {
-                Log.e(TAG, "=== REQUEST FAILURE ===");
-                Log.e(TAG, "Request that failed: " + call.request().url());
-                showLoading(false);
+                showLoading(false, null);
                 handleAppointmentError(t);
             }
         });
@@ -225,7 +297,6 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
     private void handleAppointmentResponse(Response<CreateAppointmentResponse> response) {
         Log.d(TAG, "=== RESPUESTA DE CREACIÓN DE CITA RECIBIDA ===");
         Log.d(TAG, "Response Code: " + response.code());
-        Log.d(TAG, "Request URL: " + response.raw().request().url().toString());
 
         if (response.isSuccessful() && response.body() != null) {
             CreateAppointmentResponse apiResponse = response.body();
@@ -233,16 +304,13 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
             Log.d(TAG, "Message: " + apiResponse.getMessage());
 
             if (apiResponse.isSuccess()) {
-                // ✅ ÉXITO - REDIRIGIR AL HOME
                 Log.i(TAG, "✅ Cita creada exitosamente");
                 showSuccessAndRedirectToHome(apiResponse.getMessage());
             } else {
-                // API respondió pero con error
                 Log.w(TAG, "❌ Error de la API: " + apiResponse.getMessage());
-                showError("Error: " + apiResponse.getMessage());
+                showErrorMessage("Error: " + apiResponse.getMessage());
             }
         } else {
-            // Error HTTP
             Log.e(TAG, "❌ Error HTTP: " + response.code());
             handleHttpError(response);
         }
@@ -250,114 +318,122 @@ public class ConfirmAppointmentActivity extends AppCompatActivity {
 
     private void handleHttpError(Response<CreateAppointmentResponse> response) {
         try {
-            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Sin detalles";
+            String errorBody = response.errorBody() != null ?
+                    response.errorBody().string() : "Sin detalles";
             Log.e(TAG, "Error Body: " + errorBody);
 
-            // Intentar parsear el error body como JSON
             try {
-                CreateAppointmentResponse errorResponse = new Gson().fromJson(errorBody, CreateAppointmentResponse.class);
+                CreateAppointmentResponse errorResponse = new Gson()
+                        .fromJson(errorBody, CreateAppointmentResponse.class);
                 if (errorResponse != null && errorResponse.getMessage() != null) {
-                    showError("Error: " + errorResponse.getMessage());
+                    showErrorMessage("Error: " + errorResponse.getMessage());
                 } else {
-                    showError("Error HTTP " + response.code() + ": " + errorBody);
+                    showErrorMessage("Error HTTP " + response.code());
                 }
             } catch (Exception e) {
-                showError("Error HTTP " + response.code() + ": " + errorBody);
+                showErrorMessage("Error HTTP " + response.code());
             }
 
         } catch (Exception e) {
             Log.e(TAG, "Error leyendo error body", e);
-            showError("Error HTTP " + response.code());
+            showErrorMessage("Error HTTP " + response.code());
         }
     }
 
     private void handleAppointmentError(Throwable t) {
         Log.e(TAG, "=== ERROR AL CREAR CITA ===");
-        Log.e(TAG, "Error Type: " + t.getClass().getSimpleName());
-        Log.e(TAG, "Error Message: " + t.getMessage());
+        Log.e(TAG, "Error: " + t.getMessage());
         t.printStackTrace();
 
-        showError("Error de conexión: " + t.getMessage());
+        showErrorMessage("Error de conexión. Verifica tu conexión a internet");
     }
 
-    private void showLoading(boolean show) {
-        btnConfirmar.setEnabled(!show);
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    private void showLoading(boolean show, String message) {
+        if (loadingOverlay != null) {
+            loadingOverlay.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
 
-        if (show) {
-            btnConfirmar.setText("Creando cita...");
-        } else {
-            btnConfirmar.setText("Confirmar Cita");
+        if (btnConfirmar != null) {
+            btnConfirmar.setEnabled(!show);
+        }
+
+        if (btnCancelar != null) {
+            btnCancelar.setEnabled(!show);
+        }
+
+        if (tvLoadingMessage != null && message != null) {
+            tvLoadingMessage.setText(message);
         }
 
         Log.d(TAG, "Loading state: " + (show ? "VISIBLE" : "GONE"));
     }
 
-    private void showError(String message) {
+    private void showErrorMessage(String message) {
         Log.e(TAG, "Mostrando error: " + message);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+        if (findViewById(android.R.id.content) != null) {
+            Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
+                    .setBackgroundTint(getResources().getColor(R.color.error))
+                    .setTextColor(getResources().getColor(android.R.color.white))
+                    .setAction("Reintentar", v -> confirmarCita())
+                    .show();
+        }
     }
 
-    /**
-     * ✅ NUEVO MÉTODO: Muestra éxito y redirige al HomeActivity
-     */
+    private void showSuccessMessage(String message) {
+        if (findViewById(android.R.id.content) != null) {
+            Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(getResources().getColor(R.color.success))
+                    .setTextColor(getResources().getColor(android.R.color.white))
+                    .show();
+        }
+    }
+
     private void showSuccessAndRedirectToHome(String message) {
         Log.i(TAG, "🎉 Mostrando éxito y redirigiendo al Home: " + message);
 
         String successMessage = message != null && !message.isEmpty() ?
                 message : "✅ Cita creada exitosamente. Recibirás notificación cuando esté agendada";
 
-        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
+        showSuccessMessage(successMessage);
 
-        // ✅ REDIRIGIR AL HOME DESPUÉS DE UN BREVE DELAY
-        txtResumen.postDelayed(() -> {
-            Log.d(TAG, "Redirigiendo a HomeActivity después de crear cita exitosamente");
-            redirectToHome();
-        }, 1500);
+        // Mostrar loading de éxito
+        showLoading(true, "¡Cita creada exitosamente!");
+
+        // Redirigir al home después de un delay
+        if (txtResumenCita != null) {
+            txtResumenCita.postDelayed(() -> {
+                Log.d(TAG, "Redirigiendo a HomeActivity después de crear cita exitosamente");
+                redirectToHome();
+            }, 2000);
+        }
     }
 
-    /**
-     * ✅ NUEVO MÉTODO: Redirige al HomeActivity limpiando el stack
-     */
     private void redirectToHome() {
         Intent intent = new Intent(ConfirmAppointmentActivity.this, HomeActivity.class);
 
-        // ✅ LIMPIAR TODO EL STACK DE NAVEGACIÓN
+        // Limpiar el stack de navegación
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        // ✅ OPCIONAL: Agregar extra para mostrar mensaje de éxito en Home
+        // Agregar extras para mostrar mensaje de éxito en Home
         intent.putExtra("show_success_message", true);
         intent.putExtra("success_message", "¡Cita creada exitosamente!");
 
         Log.d(TAG, "Iniciando HomeActivity con flags para limpiar stack");
         startActivity(intent);
-
-        // Finalizar esta actividad
         finish();
-    }
-
-    /**
-     * ✅ MÉTODO LEGACY: Mantener para casos donde solo se cierre sin redirigir
-     */
-    private void showSuccessAndFinish(String message) {
-        Log.i(TAG, "🎉 Mostrando éxito y cerrando: " + message);
-
-        String successMessage = message != null && !message.isEmpty() ?
-                message : "✅ Cita creada. Recibirás notificación cuando esté agendada";
-
-        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
-
-        // Cerrar la actividad después de un breve delay para que el usuario vea el mensaje
-        txtResumen.postDelayed(() -> {
-            Log.d(TAG, "Cerrando ConfirmAppointmentActivity");
-            finish();
-        }, 1500);
     }
 
     @Override
     public void onBackPressed() {
         Log.d(TAG, "Back button presionado");
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
