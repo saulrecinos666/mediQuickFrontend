@@ -149,7 +149,21 @@
     <color name="status_completed_text">#2E7D32</color>
     <color name="status_completed_border">#4CAF50</color>
 
-    <!-- Background colors -->
-    <color name="background_light">#FAFAFA</color>
+
+
+    <!-- Colores de texto -->
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+
+    <!-- Colores de estado para citas -->
+    <color name="status_confirmed">#4CAF50</color>     <!-- Verde - Confirmada/Aceptada -->
+    <color name="status_pending">#FF9800</color>       <!-- Naranja - Pendiente -->
+    <color name="status_cancelled">#F44336</color>     <!-- Rojo - Cancelada -->
+    <color name="status_completed">#2196F3</color>     <!-- Azul - Completada -->
+    <color name="status_in_progress">#9C27B0</color>   <!-- Púrpura - En progreso -->
+    <color name="status_default">#9E9E9E</color>       <!-- Gris - Estado desconocido -->
+
+    <!-- Colores de fondo -->
+    <color name="background_light">#F8F9FA</color>
     <color name="card_background">#FFFFFF</color>
 </resources>
