@@ -942,6 +942,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * Inicializa el NavigationView y su listener
      */
@@ -950,20 +951,15 @@ public class HomeActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int itemId = menuItem.getItemId();
 
-//            if (itemId == R.id.nav_logout) {
-//                logoutUser();
-//                return true;
-//            } else if (itemId == R.id.nav_profile) {
-//                // Navegar a perfil
-//                //startActivity(new Intent(this, ProfileActivity.class));
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            } else if (itemId == R.id.nav_settings) {
-//                // Navegar a configuración
-//                startActivity(new Intent(this, SettingsActivity.class));
-//                drawerLayout.closeDrawer(GravityCompat.START);
-//                return true;
-//            }
+            if (itemId == R.id.nav_logout) {
+                logoutUser();
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                // Navegar a perfil
+                //startActivity(new Intent(this, ProfileActivity.class));
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
 
             return false;
         });
