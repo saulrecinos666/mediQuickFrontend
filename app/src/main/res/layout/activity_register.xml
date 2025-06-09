@@ -1,279 +1,502 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/background_color">
 
-    <EditText
-        android:id="@+id/etDireccion"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/direccion24"
-        android:drawablePadding="8dp"
-        android:hint="Direccion"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTelefono" />
+        android:paddingBottom="24dp">
 
-    <EditText
-        android:id="@+id/etPass"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/pass24"
-        android:drawablePadding="8dp"
-        android:hint="Contraseña"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etDui" />
+        <!-- Header -->
+        <TextView
+            android:id="@+id/tvLoginTitleRegister"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center"
+            android:text="Registro de Usuario"
+            android:textColor="#073351"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/etTelefono"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/telefono24"
-        android:drawablePadding="8dp"
-        android:hint="Telefono"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPass" />
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:gravity="center"
+            android:text="Completa tus datos para crear tu cuenta"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLoginTitleRegister" />
 
-    <Button
-        android:id="@+id/btnCancelar"
-        style="@style/Button.Register"
-        android:layout_width="120dp"
-        android:layout_height="37dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        android:text="Cancelar"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Datos Personales Section -->
+        <TextView
+            android:id="@+id/tvPersonalData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="Datos Personales"
+            android:textColor="#073351"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSubtitle" />
 
-    <Button
-        android:id="@+id/btnContinuar"
-        style="@style/Button.Login"
-        android:layout_width="120dp"
-        android:layout_height="38dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="16dp"
-        android:text="Continuar"
-        android:textSize="13dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <!-- Nombres en una fila -->
+        <LinearLayout
+            android:id="@+id/llNombres"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvPersonalData">
 
-    <EditText
-        android:id="@+id/etSegundoApellido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/usuario24"
-        android:drawablePadding="8dp"
-        android:hint="Segundo Apellido"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPrimerApellido" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:hint="Primer Nombre"
+                app:startIconDrawable="@drawable/usuario24"
+                app:boxStrokeColor="#073351"
+                app:hintTextColor="#073351">
 
-    <EditText
-        android:id="@+id/etDui"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/dui24"
-        android:drawablePadding="8dp"
-        android:hint="DUI"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etCorreo" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPrimerNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textSize="14sp" />
 
-    <EditText
-        android:id="@+id/etCorreo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/ic_email"
-        android:drawablePadding="8dp"
-        android:hint="Correo Electrónico"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSegundoApellido" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/etPrimerApellido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/usuario24"
-        android:drawablePadding="8dp"
-        android:hint="Primer Apellido"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSegundoNombre" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:hint="Segundo Nombre"
+                app:startIconDrawable="@drawable/usuario24"
+                app:boxStrokeColor="#073351"
+                app:hintTextColor="#073351">
 
-    <EditText
-        android:id="@+id/etSegundoNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/usuario24"
-        android:drawablePadding="8dp"
-        android:hint="Segundo Nombre"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPrimerNombre" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSegundoNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textSize="14sp" />
 
-    <EditText
-        android:id="@+id/etPrimerNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:drawableStart="@drawable/usuario24"
-        android:drawablePadding="8dp"
-        android:hint="Primer Nombre"
-        android:inputType="textEmailAddress"
-        android:padding="7dp"
-        android:textAlignment="viewStart"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLoginTitleRegister" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tvLoginTitleRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:gravity="center"
-        android:text="Registro de Usuario"
-        android:textAlignment="viewStart"
-        android:textColor="#073351"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
 
+        <!-- Apellidos en una fila -->
+        <LinearLayout
+            android:id="@+id/llApellidos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llNombres">
 
-    <EditText
-        android:id="@+id/etFechaNacimiento"
-        android:layout_width="0dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_edittext"
-        android:clickable="true"
-        android:drawableStart="@drawable/calendar24"
-        android:drawablePadding="4dp"
-        android:paddingStart="8dp"
-        android:focusable="false"
-        android:hint="Selecciona una fecha"
-        android:inputType="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etDireccion" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:hint="Primer Apellido"
+                app:startIconDrawable="@drawable/usuario24"
+                app:boxStrokeColor="#073351"
+                app:hintTextColor="#073351">
 
-    <RadioGroup
-        android:id="@+id/rgGenero"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFechaNacimiento">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPrimerApellido"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textSize="14sp" />
 
-        <RadioButton
-            android:id="@+id/rbFemenino"
-            android:layout_width="190dp"
-            android:layout_height="35dp"
-            android:text="Femenino" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <RadioButton
-            android:id="@+id/rbMasculino"
-            android:layout_width="190dp"
-            android:layout_height="35dp"
-            android:text="Masculino" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:hint="Segundo Apellido"
+                app:startIconDrawable="@drawable/usuario24"
+                app:boxStrokeColor="#073351"
+                app:hintTextColor="#073351">
 
-    </RadioGroup>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSegundoApellido"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textSize="14sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- DUI -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDui"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="DUI"
+            app:startIconDrawable="@drawable/dui24"
+            app:boxStrokeColor="#073351"
+            app:hintTextColor="#073351"
+            app:helperText="Formato: 12345678-9"
+            app:counterEnabled="true"
+            app:counterMaxLength="10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llApellidos">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDui"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLength="10"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Género y Fecha de Nacimiento en una fila -->
+        <LinearLayout
+            android:id="@+id/llGeneroFecha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilDui">
+
+            <!-- Género -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Género"
+                    android:textColor="#073351"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="8dp" />
+
+                <RadioGroup
+                    android:id="@+id/rgGenero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/rbFemenino"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Femenino"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rbMasculino"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Masculino"
+                        android:textSize="14sp" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <!-- Fecha de Nacimiento -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:hint="Fecha de Nacimiento"
+                app:startIconDrawable="@drawable/calendar24"
+                app:boxStrokeColor="#073351"
+                app:hintTextColor="#073351">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFechaNacimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:textSize="14sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- Datos de Contacto Section -->
+        <TextView
+            android:id="@+id/tvContactData"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="Datos de Contacto"
+            android:textColor="#073351"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llGeneroFecha" />
+
+        <!-- Correo -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCorreo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Correo Electrónico"
+            app:startIconDrawable="@drawable/ic_email"
+            app:boxStrokeColor="#073351"
+            app:hintTextColor="#073351"
+            app:helperText="Ingresa un email válido"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvContactData">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Teléfono -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilTelefono"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Teléfono"
+            app:startIconDrawable="@drawable/telefono24"
+            app:boxStrokeColor="#073351"
+            app:hintTextColor="#073351"
+            app:helperText="Formato: 7777-7777"
+            app:counterEnabled="true"
+            app:counterMaxLength="9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilCorreo">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:maxLength="9"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Dirección -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDireccion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Dirección"
+            app:startIconDrawable="@drawable/direccion24"
+            app:boxStrokeColor="#073351"
+            app:hintTextColor="#073351"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilTelefono">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Credenciales Section -->
+        <TextView
+            android:id="@+id/tvCredentials"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="Credenciales de Acceso"
+            android:textColor="#073351"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilDireccion" />
+
+        <!-- Contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Contraseña"
+            app:startIconDrawable="@drawable/pass24"
+            app:endIconMode="password_toggle"
+            app:boxStrokeColor="#073351"
+            app:hintTextColor="#073351"
+            app:helperText="Mínimo 8 caracteres, incluye mayúsculas, minúsculas y números"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCredentials">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Confirmar Contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilConfirmPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Confirmar Contraseña"
+            app:startIconDrawable="@drawable/pass24"
+            app:endIconMode="password_toggle"
+            app:boxStrokeColor="#073351"
+            app:hintTextColor="#073351"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilPassword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etConfirmPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Términos y Condiciones -->
+        <CheckBox
+            android:id="@+id/cbTerms"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:text="Acepto los términos y condiciones"
+            android:textSize="14sp"
+            android:textColor="#073351"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tilConfirmPassword" />
+
+        <!-- Botones -->
+        <LinearLayout
+            android:id="@+id/llButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cbTerms">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="Cancelar"
+                android:textColor="#073351"
+                app:strokeColor="#073351"
+                app:strokeWidth="2dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnContinuar"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#073351"
+                android:text="Continuar"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
