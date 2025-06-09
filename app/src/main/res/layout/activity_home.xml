@@ -290,12 +290,23 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
-        android:layout_width="wrap_content"
+        android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="#FFFFFF"
+        android:background="@color/white"
+        android:elevation="8dp"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu_drawer" />
+        app:menu="@menu/menu_drawer"
+        app:itemIconTint="@color/nav_item_color_selector"
+        app:itemTextColor="@color/nav_item_color_selector"
+        app:itemShapeFillColor="@color/nav_item_background_selector"
+        app:itemShapeAppearance="@style/NavItemShapeAppearance"
+        app:dividerInsetStart="16dp"
+        app:dividerInsetEnd="16dp"
+        app:subheaderTextAppearance="@style/NavSubheaderTextAppearance"
+        app:itemIconSize="24dp"
+        app:itemHorizontalPadding="16dp"
+        app:itemVerticalPadding="12dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -140,10 +140,12 @@ public class HomeActivity extends AppCompatActivity {
             updateLoadingText("Configurando tu espacio de trabajo...");
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 setupQuickAccessCardsWithRole(roleFromJwt);
+                updateNavigationHeaderFromJWT();
                 hideLoadingState();
             }, ERROR_FALLBACK_DELAY);
         } else {
             setupQuickAccessCardsWithDefaultRole();
+            updateNavigationHeaderFromJWT();
             hideLoadingState();
         }
     }
@@ -308,23 +310,82 @@ public class HomeActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigation_view);
         View headerView = navigationView.getHeaderView(0);
 
-        // Descomenta cuando tengas las vistas en el header
-        /*
-        if (headerView != null && currentUser != null) {
-            TextView nameTextView = headerView.findViewById(R.id.nav_header_name);
-            TextView emailTextView = headerView.findViewById(R.id.nav_header_email);
+        if (headerView != null && userToken != null) {
+            try {
+                // Extraer datos del JWT
+                String userName = extractUserNameFromJwt(userToken);
+                String userEmail = extractUserEmailFromJwt(userToken);
 
-            if (nameTextView != null) {
-                nameTextView.setText(currentUser.getDisplayName());
-            }
+                // Actualizar nombre
+                TextView nameTextView = headerView.findViewById(R.id.textUserName);
+                if (nameTextView != null) {
+                    if (userName != null && !userName.isEmpty()) {
+                        nameTextView.setText(userName);
+                        Log.d(TAG, "Nombre del JWT actualizado: " + userName);
+                    } else {
+                        nameTextView.setText("Usuario");
+                    }
+                }
 
-            if (emailTextView != null) {
-                emailTextView.setText(currentUser.getUserEmail());
+                // Actualizar email
+                TextView emailTextView = headerView.findViewById(R.id.textUserEmail);
+                if (emailTextView != null) {
+                    if (userEmail != null && !userEmail.isEmpty()) {
+                        emailTextView.setText(userEmail);
+                        Log.d(TAG, "Email del JWT actualizado: " + userEmail);
+                    } else {
+                        emailTextView.setText("usuario@mediquick.com");
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error al actualizar header desde JWT", e);
             }
         }
-        */
     }
 
+    private String extractUserNameFromJwt(String jwt) {
+        try {
+            if (jwt == null || jwt.isEmpty()) return null;
+
+            String[] parts = jwt.split("\\.");
+            if (parts.length < 2) return null;
+
+            String payloadJson = new String(Base64.decode(parts[1], Base64.URL_SAFE | Base64.NO_WRAP), "UTF-8");
+            JSONObject payload = new JSONObject(payloadJson);
+
+            // Intentar diferentes campos posibles para el nombre
+            String userName = payload.optString("userName", null);
+            if (userName == null) userName = payload.optString("name", null);
+            if (userName == null) userName = payload.optString("displayName", null);
+            if (userName == null) userName = payload.optString("userFirstName", null);
+
+            return userName;
+        } catch (Exception e) {
+            Log.e(TAG, "Error al extraer nombre del JWT", e);
+            return null;
+        }
+    }
+    private String extractUserEmailFromJwt(String jwt) {
+        try {
+            if (jwt == null || jwt.isEmpty()) return null;
+
+            String[] parts = jwt.split("\\.");
+            if (parts.length < 2) return null;
+
+            String payloadJson = new String(Base64.decode(parts[1], Base64.URL_SAFE | Base64.NO_WRAP), "UTF-8");
+            JSONObject payload = new JSONObject(payloadJson);
+
+            // Intentar diferentes campos posibles para el email
+            String userEmail = payload.optString("userEmail", null);
+            if (userEmail == null) userEmail = payload.optString("email", null);
+
+            return userEmail;
+        } catch (Exception e) {
+            Log.e(TAG, "Error al extraer email del JWT", e);
+            return null;
+        }
+    }
     /**
      * Actualiza el mensaje de bienvenida
      */
@@ -1046,6 +1107,46 @@ public class HomeActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+    /**
+     * Actualiza el navigation header usando datos del JWT como fallback
+     */
+    private void updateNavigationHeaderFromJWT() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+
+        if (headerView != null && userToken != null) {
+            try {
+                // Extraer datos del JWT
+                String userName = extractUserNameFromJwt(userToken);
+                String userEmail = extractUserEmailFromJwt(userToken);
+
+                // Actualizar nombre
+                TextView nameTextView = headerView.findViewById(R.id.textUserName);
+                if (nameTextView != null) {
+                    if (userName != null && !userName.isEmpty()) {
+                        nameTextView.setText(userName);
+                        Log.d(TAG, "Nombre del JWT actualizado: " + userName);
+                    } else {
+                        nameTextView.setText("Usuario");
+                    }
+                }
+
+                // Actualizar email
+                TextView emailTextView = headerView.findViewById(R.id.textUserEmail);
+                if (emailTextView != null) {
+                    if (userEmail != null && !userEmail.isEmpty()) {
+                        emailTextView.setText(userEmail);
+                        Log.d(TAG, "Email del JWT actualizado: " + userEmail);
+                    } else {
+                        emailTextView.setText("usuario@mediquick.com");
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error al actualizar header desde JWT", e);
+            }
         }
     }
 }

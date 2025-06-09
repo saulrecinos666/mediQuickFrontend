@@ -1,10 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_menu"
-        android:title="Menú" />
-    <item
-        android:id="@+id/nav_logout"
-        android:title="Cerrar sesión"
-        android:icon="@drawable/logout_svg" /> <!-- Opcional -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <!-- Sección Principal -->
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="Inicio" />
+
+        <item
+            android:id="@+id/nav_appointments"
+            android:icon="@drawable/ic_calendar"
+            android:title="Mis Citas" />
+
+        <item
+            android:id="@+id/nav_medical_history"
+            android:icon="@drawable/history"
+            android:title="Historial Médico" />
+
+        <item
+            android:id="@+id/nav_doctors"
+            android:icon="@drawable/ic_doctor"
+            android:title="Médicos" />
+
+        <item
+            android:id="@+id/nav_prescriptions"
+            android:icon="@drawable/ic_prescription"
+            android:title="Recetas" />
+    </group>
+
+    <!-- Separador -->
+    <item android:title="Configuración">
+        <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/ic_person"
+                android:title="Mi Perfil" />
+
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="Configuración" />
+
+            <item
+                android:id="@+id/nav_notifications"
+                android:icon="@drawable/ic_notifications"
+                android:title="Notificaciones" />
+        </menu>
+    </item>
+
+    <!-- Separador -->
+    <item android:title="Ayuda">
+        <menu>
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_help"
+                android:title="Ayuda y Soporte" />
+
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info"
+                android:title="Acerca de" />
+        </menu>
+    </item>
+
+    <!-- Separador -->
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Cerrar Sesión"
+                android:iconTint="@color/red_600"
+                android:titleCondensed="Logout" />
+        </menu>
+    </item>
+
 </menu>
