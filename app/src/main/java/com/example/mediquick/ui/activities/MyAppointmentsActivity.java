@@ -22,6 +22,8 @@ import com.example.mediquick.services.AppointmentService;
 import com.example.mediquick.ui.adapters.AppointmentAdapter;
 import com.example.mediquick.data.model.AppointmentSummary;
 import com.example.mediquick.utils.SessionManager;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,9 +54,11 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     private String userId;
     private String userToken;
 
-    // Nuevas views
+    // Views
     private TextView txtTotalCitas, txtCitasPendientes, txtCitasCompletadas;
     private LinearLayout layoutEmpty;
+    private MaterialButton btnAgendarCita;
+    private FloatingActionButton fabNuevaCita;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         setupSession();
         setupRecyclerView();
         setupApiService();
+        setupClickListeners();
         cargarCitas();
     }
 
@@ -79,11 +84,52 @@ public class MyAppointmentsActivity extends AppCompatActivity {
         txtCitasCompletadas = findViewById(R.id.txtCitasCompletadas);
         layoutEmpty = findViewById(R.id.layoutEmpty);
 
+        // Botones para agendar cita
+        btnAgendarCita = findViewById(R.id.btnAgendarCita);
+        fabNuevaCita = findViewById(R.id.fabNuevaCita);
+
         Log.d(TAG, "Views inicializadas correctamente");
 
         // Verificar qué views existen
         Log.d(TAG, "txtTotalCitas: " + (txtTotalCitas != null ? "OK" : "NULL"));
         Log.d(TAG, "layoutEmpty: " + (layoutEmpty != null ? "OK" : "NULL"));
+        Log.d(TAG, "btnAgendarCita: " + (btnAgendarCita != null ? "OK" : "NULL"));
+        Log.d(TAG, "fabNuevaCita: " + (fabNuevaCita != null ? "OK" : "NULL"));
+    }
+
+    private void setupClickListeners() {
+        // Listener para el botón "Agendar Cita" del estado vacío
+        if (btnAgendarCita != null) {
+            btnAgendarCita.setOnClickListener(v -> {
+                Log.d(TAG, "Botón Agendar Cita presionado");
+                abrirActivityAgendarCita();
+            });
+        }
+
+        // Listener para el FAB
+        if (fabNuevaCita != null) {
+            fabNuevaCita.setOnClickListener(v -> {
+                Log.d(TAG, "FAB Nueva Cita presionado");
+                abrirActivityAgendarCita();
+            });
+        }
+    }
+
+    private void abrirActivityAgendarCita() {
+        try {
+            // Cambiar "ScheduleAppointmentActivity" por el nombre real de tu activity
+            Intent intent = new Intent(this, InstitutionListActivity.class);
+
+            // Opcional: pasar datos adicionales si es necesario
+            intent.putExtra("userId", userId);
+
+            startActivity(intent);
+            Log.d(TAG, "Navegando a ScheduleAppointmentActivity");
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error al abrir activity de agendar cita", e);
+            Toast.makeText(this, "Error al abrir formulario de cita", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupSession() {
@@ -428,6 +474,8 @@ public class MyAppointmentsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "MyAppointmentsActivity resumed");
+        // Opcional: recargar citas cuando se regrese de agendar una nueva
+        // cargarCitas();
     }
 
     @Override
